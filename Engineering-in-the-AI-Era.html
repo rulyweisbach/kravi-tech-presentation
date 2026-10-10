@@ -1,0 +1,939 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Engineering in the AI Era</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;0,900;1,600;1,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: full-screen deck. Text column left, big visual right; each era gets
+     its own color and a giant outlined year. Speaker notes live in a drawer. */
+  :root{
+    --bg:#0d1524;
+    --bg-2:#131e31;
+    --panel:#17243b;
+    --term:#0a111d;
+    --fg:#f4efe4;
+    --fg-dim:#93a6bd;
+    --accent:#5ec8d8;
+    --warm:#f2994a;
+    --olive:#bcc882;
+    --green:#8fe3a0;
+    --violet:#aa9ef0;
+    --red:#ef6f6c;
+    --line:rgba(244,239,228,.13);
+    --grid:rgba(94,200,216,.055);
+    color-scheme:dark;
+    --font-display:'Fraunces','Iowan Old Style','Palatino Linotype',serif;
+    --font-body:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+    --font-mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+  }
+  html,body{height:100%;margin:0;background:var(--bg)}
+  *{box-sizing:border-box}
+  body{font-family:var(--font-body);color:var(--fg);overflow:hidden}
+
+  .deck{height:100%;display:flex;flex-direction:column;position:relative;isolation:isolate;
+    background:linear-gradient(160deg,#0f1a2c 0%,var(--bg) 45%,#0b1120 100%)}
+  .deck::before{content:"";position:absolute;inset:-20%;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(38% 42% at 82% 12%,rgba(94,200,216,.16),transparent 70%),
+      radial-gradient(34% 40% at 10% 92%,rgba(242,153,74,.12),transparent 70%),
+      radial-gradient(30% 34% at 55% 60%,rgba(170,158,240,.07),transparent 70%);
+    filter:blur(10px);animation:drift 28s ease-in-out infinite alternate}
+  .deck::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(-4%,3%) scale(1.08)}}
+  @media (prefers-reduced-motion:reduce){.deck::before{animation:none}}
+
+  .chrome{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:16px clamp(20px,4vw,44px) 10px;font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--fg-dim)}
+  .brand{display:flex;align-items:center;gap:8px}
+  .brand i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(94,200,216,.18)}
+  .progress{flex:0 0 auto;height:3px;margin:0 clamp(20px,4vw,44px);background:var(--line);border-radius:2px;overflow:hidden}
+  .progress div{height:100%;width:5%;background:linear-gradient(90deg,var(--accent),var(--warm));transition:width .45s cubic-bezier(.4,0,.2,1)}
+
+  .stage{position:relative;flex:1 1 auto;min-height:0}
+  .slide{--era:var(--accent);position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+    gap:18px;padding:24px clamp(22px,5vw,88px);overflow-y:auto;overflow-x:hidden;
+    opacity:0;transform:translateY(18px);pointer-events:none;transition:opacity .5s ease,transform .5s ease}
+  .slide.active{opacity:1;transform:none;pointer-events:auto}
+  .slide.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;align-content:safe center;gap:clamp(20px,4vw,64px)}
+  .slide > *{position:relative;z-index:1}
+  .era-c{--era:var(--green)} .era-web{--era:var(--accent)} .era-cloud{--era:var(--violet)} .era-ai{--era:var(--warm)} .era-you{--era:var(--olive)}
+
+  .watermark{position:absolute !important;z-index:0 !important;right:clamp(10px,3vw,40px);bottom:0;font-family:var(--font-display);
+    font-weight:900;font-size:clamp(110px,21vw,300px);line-height:.8;color:transparent;
+    -webkit-text-stroke:1px rgba(244,239,228,.09);pointer-events:none;user-select:none}
+
+  .txt{display:flex;flex-direction:column;gap:16px;min-width:0}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--era);display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--era)}
+  h1,h2{font-family:var(--font-display);font-weight:700;margin:0;text-wrap:balance;letter-spacing:-.01em}
+  h1{font-size:clamp(38px,6.6vw,84px);line-height:1.02;max-width:14ch}
+  h2{font-size:clamp(28px,4.3vw,56px);line-height:1.06;max-width:16ch}
+  h1 em,h2 em,.big em{font-style:italic;color:var(--era)}
+  .cap{font-size:clamp(16px,1.8vw,21px);line-height:1.5;color:var(--fg-dim);max-width:34ch;margin:0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--era);
+    border:1px solid var(--line);border-color:color-mix(in srgb,var(--era) 45%,transparent);padding:6px 12px;border-radius:999px}
+  .big{font-family:var(--font-display);font-weight:700;font-size:clamp(34px,6vw,76px);line-height:1.06;margin:0;max-width:15ch;text-wrap:balance}
+
+  .vis{min-width:0;display:flex;flex-direction:column;gap:16px;justify-content:center}
+  .vis > svg{width:100%;height:auto;max-height:min(60vh,560px);display:block}
+  .notes{display:none}
+
+  /* entry motion */
+  .slide.active .rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d,0) * 110ms)}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .slide.active .pop{animation:pop .5s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(var(--d,0) * 120ms);transform-box:fill-box;transform-origin:center}
+  @keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+  .slide.active .draw{stroke-dasharray:1200;animation:draw 1.6s ease both;animation-delay:calc(var(--d,0) * 120ms)}
+  @keyframes draw{from{stroke-dashoffset:1200}to{stroke-dashoffset:0}}
+  .pulse{animation:pulse 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+  @keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+  .blink{animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* terminal / code mockups */
+  .term{background:var(--term);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    box-shadow:0 30px 60px -24px rgba(0,0,0,.7);font-family:var(--font-mono);font-size:clamp(11px,1.15vw,14.5px);line-height:1.7}
+  .term-bar{display:flex;gap:6px;align-items:center;padding:10px 14px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--line)}
+  .term-bar i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+  .term-bar span{margin-left:10px;font-size:11px;color:var(--fg-dim)}
+  .term pre{margin:0;padding:16px 18px;white-space:pre-wrap;word-break:break-word;color:var(--fg);font:inherit}
+  .k-dim{color:var(--fg-dim)} .k-err{color:var(--red)} .k-ok{color:var(--green)} .k-acc{color:var(--accent)} .k-warm{color:var(--warm)} .k-vio{color:var(--violet)}
+  .era-c .term{border-color:rgba(143,227,160,.25)}
+  .era-c .term pre{color:var(--green);text-shadow:0 0 8px rgba(143,227,160,.35)}
+  .line{display:block}
+  .add{display:block;background:rgba(143,227,160,.08);color:var(--green)}
+  .del{display:block;background:rgba(239,111,108,.09);color:var(--red)}
+  .bubble{margin:4px 18px 16px;padding:10px 14px;border-radius:10px;background:var(--panel);border:1px solid rgba(242,153,74,.45);
+    font-family:var(--font-body);font-size:clamp(12.5px,1.2vw,14.5px);line-height:1.45;color:var(--fg);position:relative}
+  .bubble b{color:var(--warm);font-weight:600}
+  .bubble::before{content:"";position:absolute;top:-7px;left:28px;width:12px;height:12px;background:var(--panel);
+    border-left:1px solid rgba(242,153,74,.45);border-top:1px solid rgba(242,153,74,.45);transform:rotate(45deg)}
+
+  /* icons */
+  .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+
+  /* flow strip */
+  .flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .flow .st{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--fg-dim)}
+  .flow .st span.o{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);
+    background:var(--panel);color:var(--accent)}
+  .flow .st.hot span.o{border-color:var(--warm);color:var(--warm);box-shadow:0 0 0 5px rgba(242,153,74,.12)}
+  .flow .st.hot{color:var(--warm)}
+  .flow .ar{flex:1 1 14px;min-width:14px;height:1px;background:var(--line);margin-bottom:20px}
+
+  /* toolkit */
+  .tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .tool{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+  .tool .ib{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:rgba(94,200,216,.1);color:var(--accent)}
+  .tool.ai .ib{background:rgba(242,153,74,.12);color:var(--warm)}
+  .tool.ai{border-color:rgba(242,153,74,.35)}
+  .tool b{font-family:var(--font-display);font-size:clamp(17px,1.7vw,22px);font-weight:700}
+  .tool small{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-dim);letter-spacing:.04em}
+
+  /* options board */
+  .board{display:flex;flex-direction:column;gap:12px}
+  .mrow{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center;padding:12px 16px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+  .mrow .cat{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-dim)}
+  .mrow .opts{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .opt{font-weight:600;font-size:clamp(14px,1.5vw,17px);padding:5px 12px;border-radius:8px;background:rgba(244,239,228,.06)}
+  .vs{font-family:var(--font-display);font-style:italic;color:var(--warm);font-size:15px}
+
+  /* dashboard */
+  .dash{background:var(--term);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 30px 60px -24px rgba(0,0,0,.7)}
+  .dash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line)}
+  .metric{background:var(--term);padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+  .metric .lb{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-dim);display:flex;justify-content:space-between;gap:8px}
+  .metric .val{font-family:var(--font-display);font-weight:700;font-size:clamp(22px,2.6vw,32px);font-variant-numeric:tabular-nums}
+  .metric svg{width:100%;height:40px;display:block}
+  .pill{font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:999px;letter-spacing:.06em}
+  .pill.ok{background:rgba(143,227,160,.14);color:var(--green)}
+  .pill.wn{background:rgba(242,153,74,.14);color:var(--warm)}
+  .bar{height:8px;border-radius:4px;background:rgba(244,239,228,.08);overflow:hidden}
+  .bar div{height:100%;width:100%;background:var(--green);border-radius:4px}
+  .avatars{display:flex}
+  .avatars span{width:30px;height:30px;border-radius:50%;border:2px solid var(--term);margin-left:-8px;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;color:var(--bg)}
+  .avatars span:first-child{margin-left:0}
+
+  /* misunderstanding cards */
+  .story{display:flex;flex-direction:column;gap:12px}
+  .card{border-radius:12px;padding:14px 18px;border:1px solid var(--line);background:var(--panel);display:flex;gap:14px;align-items:flex-start}
+  .card .who{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;flex:0 0 78px;padding-top:3px;color:var(--fg-dim)}
+  .card .what{font-size:clamp(14.5px,1.5vw,18px);line-height:1.45;min-width:0}
+  .card code{font-family:var(--font-mono);font-size:.86em;color:var(--warm);word-break:break-word}
+  .card.ai{border-color:rgba(94,200,216,.35)}
+  .card.ai .who{color:var(--accent)}
+  .card.bad{border-color:rgba(239,111,108,.5);background:rgba(239,111,108,.07)}
+  .card.bad .who{color:var(--red)}
+  .tag{font-family:var(--font-mono);font-size:10.5px;color:var(--fg-dim);letter-spacing:.08em;text-transform:uppercase}
+
+  /* skills map */
+  .map{display:flex;flex-direction:column;gap:10px;width:100%;max-width:1060px}
+  .mr{display:grid;grid-template-columns:minmax(0,1fr) 70px minmax(0,1.25fr);align-items:center;gap:8px}
+  .mr .a,.mr .b{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;min-width:0}
+  .mr .a{background:rgba(188,200,130,.09);border:1px solid rgba(188,200,130,.35);color:var(--olive);font-weight:600;font-size:clamp(14px,1.55vw,18px)}
+  .mr .b{background:var(--panel);border:1px solid var(--line);font-size:clamp(13.5px,1.45vw,17px);color:var(--fg)}
+  .mr .b .ic{color:var(--accent)}
+  .mr .lnk{height:2px;background:linear-gradient(90deg,var(--olive),var(--accent));position:relative}
+  .mr .lnk::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:7px solid var(--accent);border-right:0}
+  .maphead{display:grid;grid-template-columns:minmax(0,1fr) 70px minmax(0,1.25fr);gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .maphead span:first-child{color:var(--olive)} .maphead span:last-child{color:var(--accent)}
+
+  /* closing actions */
+  .acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:1000px}
+  .act{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--panel);display:flex;flex-direction:column;gap:10px}
+  .act .n{font-family:var(--font-mono);font-size:11px;color:var(--olive);letter-spacing:.12em}
+  .act b{font-size:clamp(15px,1.6vw,19px);font-weight:600;line-height:1.35}
+
+  .footer-name{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:13px;color:var(--fg-dim)}
+  .footer-name i{width:28px;height:1px;background:var(--line)}
+
+  /* section dividers */
+  .divider{justify-content:center;gap:10px}
+  .divider .part{font-family:var(--font-mono);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-dim)}
+  .divider .word{font-family:var(--font-display);font-weight:900;font-size:clamp(84px,16vw,230px);line-height:.88;letter-spacing:-.035em;color:var(--era);margin:0}
+  .divider .word em{font-style:italic;font-weight:600;color:var(--fg)}
+  .divider .rule{width:min(420px,60%);height:2px;background:linear-gradient(90deg,var(--era),transparent);margin-top:10px}
+  .divider .cap{margin-top:6px}
+  .divider .ring{position:absolute !important;z-index:0 !important;right:-8vw;top:50%;width:min(62vw,720px);height:auto;transform:translateY(-50%);opacity:.5;pointer-events:none}
+
+  /* up/down cards */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;max-width:1100px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+  .kpi .ib{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:rgba(244,239,228,.05);color:var(--fg-dim)}
+  .kpi .ib .ic{width:30px;height:30px}
+  .kpi b{font-family:var(--font-display);font-size:clamp(19px,2vw,26px);font-weight:700}
+  .kpi small{font-size:13.5px;color:var(--fg-dim);line-height:1.4}
+  .kpi .arr{font-size:34px;line-height:1;color:var(--fg-dim)}
+  .kpi.up{border-color:rgba(242,153,74,.4)}
+  .kpi.up .ib{background:rgba(242,153,74,.12);color:var(--warm)}
+  .kpi.up .arr{color:var(--warm)}
+  @media (max-width:820px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} .divider .ring{opacity:.25} }
+
+  /* notes drawer + controls */
+  .notes-panel{flex:0 0 auto;max-height:30%;overflow-y:auto;margin:0 clamp(16px,4vw,44px);padding:14px 18px;
+    border:1px solid rgba(242,153,74,.35);border-radius:12px;background:rgba(19,30,49,.92)}
+  .notes-panel .lb{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--warm);margin-bottom:6px}
+  .notes-panel p{margin:0;font-size:clamp(14px,1.4vw,16.5px);line-height:1.6;max-width:110ch}
+  .controls{flex:0 0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;
+    padding:12px clamp(16px,4vw,44px) calc(14px + env(safe-area-inset-bottom,0px))}
+  .ctl-l{display:flex;gap:8px} .ctl-r{display:flex;justify-content:flex-end;gap:8px}
+  .ctl-c{display:flex;align-items:center;gap:14px}
+  .nav-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(244,239,228,.03);color:var(--fg);
+    font-size:18px;cursor:pointer;display:grid;place-items:center;transition:border-color .2s,background .2s}
+  .nav-btn:hover{border-color:var(--accent);background:rgba(94,200,216,.08)}
+  .nav-btn[disabled]{opacity:.3;cursor:default}
+  .txt-btn{height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(244,239,228,.03);color:var(--fg-dim);
+    font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .txt-btn:hover{color:var(--fg);border-color:var(--accent)}
+  .txt-btn[aria-pressed="true"]{color:var(--warm);border-color:rgba(242,153,74,.6);background:rgba(242,153,74,.08)}
+  .txt-btn kbd{font-family:inherit;font-size:10px;opacity:.6}
+  .dots{display:flex;gap:6px;align-items:center}
+  .dot{width:6px;height:6px;border-radius:50%;border:none;padding:0;background:var(--line);cursor:pointer;transition:width .25s,background .25s}
+  .dot.active{background:var(--accent);width:18px;border-radius:4px}
+  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  @media (max-width:820px){
+    .slide.split{grid-template-columns:1fr;align-content:start}
+    .tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .acts{grid-template-columns:1fr}
+    .mr,.maphead{grid-template-columns:minmax(0,1fr) 28px minmax(0,1.2fr)}
+    .dots{display:none}
+    .txt-btn kbd{display:none}
+  }
+  @media (max-width:480px){
+    .dash-grid{grid-template-columns:1fr}
+    .mrow{grid-template-columns:1fr}
+    .card{flex-direction:column;gap:4px}
+    .card .who{flex:none}
+    .watermark{font-size:120px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .slide,.progress div,.dot{transition:none !important}
+    .slide.active .rise,.slide.active .pop,.slide.active .draw,.pulse,.blink{animation:none !important}
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+  <symbol id="i-loop" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8M20 4v4h-4M20 12a8 8 0 0 1-13.7 5.7L4 16M4 20v-4h4"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-brief" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8 10h8M8 14h8M8 18h5"/></symbol>
+  <symbol id="i-rewind" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></symbol>
+  <symbol id="i-term" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></symbol>
+  <symbol id="i-editor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18M10 11l6 2.5-2.5 1-1 2.5z"/></symbol>
+  <symbol id="i-git" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 7v10M18 10c0 4-6 3-12 7"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-ship" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-build" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-.4-.4-2.6z"/></symbol>
+</svg>
+
+<div class="deck">
+  <div class="chrome">
+    <span class="brand"><i></i>From the field to the code</span>
+    <span id="counter">01 / 23</span>
+  </div>
+  <div class="progress"><div id="progressFill"></div></div>
+
+  <main class="stage" id="stage">
+
+    <!-- 1 TITLE -->
+    <section class="slide split era-you">
+      <div class="txt">
+        <span class="eyebrow rise">For those finishing their service</span>
+        <h1 class="rise" style="--d:1">From the field to <em>the code</em></h1>
+        <p class="cap rise" style="--d:2">Engineering in the AI era, and why your skills fit it.</p>
+        <div class="footer-name rise" style="--d:3"><span>Ruli Weisbach</span><i></i><span>EVP of R&amp;D, AppsFlyer</span></div>
+      </div>
+      <div class="vis">
+        <svg viewBox="0 0 600 460" role="img" aria-label="A dashed route across a topographic map, ending at a code symbol">
+          <g data-topo="var(--olive)" data-cx="300" data-cy="230"></g>
+          <path class="draw" d="M70,390 C150,360 160,280 240,270 S330,300 360,220 S470,120 520,90" fill="none" stroke="var(--fg)" stroke-width="2" stroke-dasharray="7 9" style="--d:2"/>
+          <circle cx="70" cy="390" r="9" fill="var(--olive)"/>
+          <circle cx="240" cy="270" r="5" fill="var(--fg)"/>
+          <circle cx="360" cy="220" r="5" fill="var(--fg)"/>
+          <g class="pop" style="--d:6">
+            <circle cx="520" cy="90" r="38" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/>
+            <text x="520" y="99" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="24" fill="var(--accent)">&lt;/&gt;</text>
+          </g>
+          <text x="70" y="425" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--olive)" letter-spacing="2">SERVICE</text>
+          <text x="520" y="150" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--accent)" letter-spacing="2">ENGINEER</text>
+        </svg>
+      </div>
+      <aside class="notes">Welcome. In the next 20 minutes I want to do one thing: convince you that software engineering has changed so much that the skills you built in the army are now among the most valuable an engineer can have. I'll start with a short history, show what engineering looks like today, and finish with why I think you're in a great position to succeed.</aside>
+    </section>
+
+
+    <section class="slide divider era-c">
+      <svg class="ring" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="var(--era)"><circle cx="200" cy="200" r="195" opacity=".12"/><circle cx="200" cy="200" r="150" opacity=".2"/><circle cx="200" cy="200" r="105" opacity=".3" stroke-dasharray="3 7"/><circle cx="200" cy="200" r="60" opacity=".45"/></g><circle class="pulse" cx="200" cy="5" r="5" fill="var(--era)"/><circle cx="350" cy="200" r="4" fill="var(--era)" opacity=".7"/></svg>
+      <span class="part rise">Part 01</span>
+      <p class="word rise" style="--d:1">Then</p>
+      <span class="rule rise" style="--d:2"></span>
+      <p class="cap rise" style="--d:3">How engineers used to build software</p>
+      <aside class="notes">Let's start with a short trip back in time, so you can see how much the job has changed.</aside>
+    </section>
+    <!-- 2 TIMELINE -->
+    <section class="slide">
+      <div class="txt">
+        <span class="eyebrow rise">30 years in one line</span>
+        <h2 class="rise" style="--d:1">Four eras of <em>building software</em></h2>
+      </div>
+      <div class="vis">
+        <svg viewBox="0 0 1000 330" role="img" aria-label="Timeline of four eras: C in the 1990s, the web in the 2000s, cloud and big data in the 2010s, AI agents now">
+          <path class="draw" d="M60,300 C320,296 620,240 950,36" fill="none" stroke="var(--fg-dim)" stroke-width="1.5" stroke-dasharray="4 7" opacity=".7"/>
+          <text x="950" y="24" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--fg-dim)">what one engineer can build ↗</text>
+          <line x1="60" y1="210" x2="940" y2="210" stroke="var(--line)" stroke-width="2"/>
+
+          <g class="pop" style="--d:1">
+            <rect x="102" y="92" width="76" height="76" rx="16" fill="var(--panel)" stroke="var(--green)" stroke-width="1.5"/>
+            <text x="140" y="140" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="28" fill="var(--green)">{ }</text>
+            <circle cx="140" cy="210" r="8" fill="var(--green)"/>
+            <text x="140" y="246" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--green)">1990s</text>
+            <text x="140" y="272" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="18" fill="var(--fg)">C &amp; the machine</text>
+          </g>
+          <g class="pop" style="--d:2">
+            <rect x="342" y="92" width="76" height="76" rx="16" fill="var(--panel)" stroke="var(--accent)" stroke-width="1.5"/>
+            <rect x="358" y="114" width="44" height="32" rx="4" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <line x1="358" y1="122" x2="402" y2="122" stroke="var(--accent)" stroke-width="2"/>
+            <circle cx="380" cy="210" r="8" fill="var(--accent)"/>
+            <text x="380" y="246" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--accent)">2000s</text>
+            <text x="380" y="272" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="18" fill="var(--fg)">The full-stack web</text>
+          </g>
+          <g class="pop" style="--d:3">
+            <rect x="582" y="92" width="76" height="76" rx="16" fill="var(--panel)" stroke="var(--violet)" stroke-width="1.5"/>
+            <path d="M603,142 h34 a12,12 0 0 0 1,-24 a18,18 0 0 0 -34,-4 a13,13 0 0 0 -1,28z" fill="none" stroke="var(--violet)" stroke-width="2"/>
+            <circle cx="620" cy="210" r="8" fill="var(--violet)"/>
+            <text x="620" y="246" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--violet)">2010s</text>
+            <text x="620" y="272" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="18" fill="var(--fg)">Cloud &amp; big data</text>
+          </g>
+          <g class="pop" style="--d:4">
+            <rect x="822" y="92" width="76" height="76" rx="16" fill="var(--panel)" stroke="var(--warm)" stroke-width="2"/>
+            <path class="pulse" d="M860,106 C863,124 866,127 884,130 C866,133 863,136 860,154 C857,136 854,133 836,130 C854,127 857,124 860,106Z" fill="var(--warm)"/>
+            <circle cx="860" cy="210" r="10" fill="var(--warm)"/>
+            <circle cx="860" cy="210" r="18" fill="none" stroke="var(--warm)" opacity=".4"/>
+            <text x="860" y="246" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--warm)">NOW</text>
+            <text x="860" y="272" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="18" fill="var(--fg)">AI agents</text>
+          </g>
+        </svg>
+      </div>
+      <aside class="notes">In about 30 years, engineering went through four big eras. Each one let a single engineer build much more, and each one changed what it took to be good at the job. Watch the dashed line: what one person can build keeps climbing, and right now it's climbing faster than ever.</aside>
+    </section>
+
+    <!-- 3 C ERA -->
+    <section class="slide split era-c">
+      <div class="watermark">1990s</div>
+      <div class="txt">
+        <span class="eyebrow rise">Era 01 · C</span>
+        <h2 class="rise" style="--d:1">Making it compile <em>was the mission</em></h2>
+        <div class="chips rise" style="--d:2"><span class="chip">Memory by hand</span><span class="chip">Hours of focus</span><span class="chip">One-language experts</span></div>
+      </div>
+      <div class="vis">
+        <div class="term rise" style="--d:2">
+          <div class="term-bar"><i></i><i></i><i></i><span>inventory.c</span></div>
+<pre><span class="k-dim">/* allocate, copy, pray */</span>
+char *buf = malloc(256);
+strcpy(buf, input);     <span class="k-dim">/* hope it fits */</span>
+free(buf);
+free(buf);              <span class="k-dim">/* oops */</span>
+
+$ gcc inventory.c -o inventory
+inventory.c:57: <span class="k-err">error:</span> expected ';' before '}'
+$ gcc inventory.c -o inventory &amp;&amp; ./inventory
+<span class="k-err">Segmentation fault (core dumped)</span>
+$ <span class="blink">█</span></pre>
+        </div>
+      </div>
+      <aside class="notes">In the C days you managed memory by hand. Forget to free it and you leak; free it twice and the program crashes with "segmentation fault" and no hint where. Just making code compile and run was the mission. It took deep knowledge, hours of concentration, and calculating memory sizes and pointers in your head. People spent years mastering one language and stayed experts in it.</aside>
+    </section>
+
+    <!-- 4 WEB ERA -->
+    <section class="slide split era-web">
+      <div class="watermark">2000s</div>
+      <div class="txt">
+        <span class="eyebrow rise">Era 02 · The web</span>
+        <h2 class="rise" style="--d:1">Every layer, <em>and how they talk</em></h2>
+        <div class="chips rise" style="--d:2"><span class="chip">Full stack</span><span class="chip">HTTP</span><span class="chip">SQL</span></div>
+      </div>
+      <div class="vis">
+        <svg viewBox="0 0 640 330" role="img" aria-label="Three tiers: browser, server, database, connected by HTTP and SQL">
+          <g class="pop" style="--d:1">
+            <rect x="20" y="60" width="160" height="170" rx="16" fill="var(--panel)" stroke="var(--accent)" stroke-opacity=".5"/>
+            <rect x="60" y="90" width="80" height="56" rx="6" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <line x1="60" y1="103" x2="140" y2="103" stroke="var(--accent)" stroke-width="2"/>
+            <rect x="70" y="113" width="34" height="6" rx="3" fill="var(--accent)" opacity=".6"/>
+            <rect x="70" y="126" width="56" height="6" rx="3" fill="var(--accent)" opacity=".3"/>
+            <text x="100" y="182" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="18" fill="var(--fg)">Browser</text>
+            <text x="100" y="206" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--fg-dim)">HTML · CSS · JS</text>
+          </g>
+          <g class="pop" style="--d:2">
+            <rect x="240" y="60" width="160" height="170" rx="16" fill="var(--panel)" stroke="var(--accent)" stroke-opacity=".5"/>
+            <rect x="285" y="88" width="70" height="14" rx="3" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <rect x="285" y="108" width="70" height="14" rx="3" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <rect x="285" y="128" width="70" height="14" rx="3" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <circle class="pulse" cx="345" cy="95" r="2.5" fill="var(--green)"/>
+            <circle class="pulse" cx="345" cy="115" r="2.5" fill="var(--green)"/>
+            <circle class="pulse" cx="345" cy="135" r="2.5" fill="var(--green)"/>
+            <text x="320" y="182" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="18" fill="var(--fg)">Server</text>
+            <text x="320" y="206" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--fg-dim)">Java · PHP · .NET</text>
+          </g>
+          <g class="pop" style="--d:3">
+            <rect x="460" y="60" width="160" height="170" rx="16" fill="var(--panel)" stroke="var(--accent)" stroke-opacity=".5"/>
+            <ellipse cx="540" cy="94" rx="32" ry="9" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <path d="M508,94 v44 a32,9 0 0 0 64,0 v-44" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <path d="M508,116 a32,9 0 0 0 64,0" fill="none" stroke="var(--accent)" stroke-width="2"/>
+            <text x="540" y="182" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="18" fill="var(--fg)">Database</text>
+            <text x="540" y="206" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--fg-dim)">MySQL · Oracle</text>
+          </g>
+          <line x1="184" y1="145" x2="236" y2="145" stroke="var(--fg)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="210" y="134" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--accent)">HTTP</text>
+          <line x1="404" y1="145" x2="456" y2="145" stroke="var(--fg)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="430" y="134" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--accent)">SQL</text>
+          <path d="M20,258 v14 h600 v-14" fill="none" stroke="var(--warm)" stroke-width="1.5"/>
+          <line x1="320" y1="272" x2="320" y2="286" stroke="var(--warm)" stroke-width="1.5"/>
+          <text x="320" y="310" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--warm)">one feature touched all of it</text>
+        </svg>
+      </div>
+      <aside class="notes">Then came the web. A single feature now crossed three tiers: the browser, the application server, and the database. You had to understand each layer and how they talk to each other: HTTP between browser and server, SQL between server and database. "Full-stack" became a job title, but most engineers still picked a side: frontend, backend, or data.</aside>
+    </section>
+
+    <!-- 5 CLOUD ERA -->
+    <section class="slide split era-cloud">
+      <div class="watermark">2010s</div>
+      <div class="txt">
+        <span class="eyebrow rise">Era 03 · Cloud &amp; big data</span>
+        <h2 class="rise" style="--d:1">Hundreds of services. <em>Choose, wire, scale.</em></h2>
+        <div class="chips rise" style="--d:2"><span class="chip">Distributed systems</span><span class="chip">DevOps</span><span class="chip">Platform experts</span></div>
+      </div>
+      <div class="vis">
+        <svg viewBox="0 0 592 340" role="img" aria-label="Honeycomb of cloud and data services" id="hexes"></svg>
+      </div>
+      <aside class="notes">Cloud and big data turned the toolbox into hundreds of managed services: compute, storage, queues, streaming, warehouses, containers. The hard part moved from writing every line to choosing the right pieces and wiring them together so they scale. Engineers became platform specialists: the AWS person, the Kafka person, the Spark person.</aside>
+    </section>
+
+    <!-- 6 AI ERA -->
+    <section class="slide split era-ai">
+      <div class="watermark">NOW</div>
+      <div class="txt">
+        <span class="eyebrow rise">Era 04 · AI agents</span>
+        <h2 class="rise" style="--d:1">You give the brief. <em>The agent executes.</em></h2>
+        <div class="chips rise" style="--d:2"><span class="chip">Plain language</span><span class="chip">Context</span><span class="chip">Review</span></div>
+      </div>
+      <div class="vis">
+        <div class="term">
+          <div class="term-bar"><i></i><i></i><i></i><span>agent · ~/payments-service</span></div>
+<pre><span class="line rise" style="--d:1"><span class="k-warm">&gt;</span> Add retry logic to the payment service, with tests.</span>
+<span class="line rise" style="--d:3"><span class="k-acc">●</span> Reading 14 files in src/payments/</span><span class="line rise" style="--d:4"><span class="k-acc">●</span> Plan: wrap gateway calls with exponential backoff</span><span class="line rise" style="--d:5"><span class="k-acc">●</span> Edited   gateway.ts        <span class="k-ok">+38</span> <span class="k-err">−6</span></span><span class="line rise" style="--d:6"><span class="k-acc">●</span> Created  gateway.test.ts   <span class="k-ok">+72</span></span><span class="line rise" style="--d:7"><span class="k-acc">●</span> Running tests…  <span class="k-ok">48 passed</span></span><span class="line rise" style="--d:9"><span class="k-ok">✓ Done. Ready for your review.</span> <span class="blink">█</span></span></pre>
+        </div>
+      </div>
+      <aside class="notes">And now: AI agents. With tools like Claude Code you describe what you want in plain language. The agent reads the codebase, makes a plan, edits files, writes tests and runs them. Your job is the brief, and then deciding whether the result is good. The engineer now works more like a commander giving a mission than a typist writing every line.</aside>
+    </section>
+
+    <!-- 7 SKILLS MATRIX -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise">The skills behind each era</span>
+        <h2 class="rise" style="--d:1">Less memory. <em>More judgment.</em></h2>
+        <p class="cap rise" style="--d:2">Bigger dot = mattered more.</p>
+      </div>
+      <div class="vis">
+        <svg viewBox="0 0 760 420" role="img" aria-label="Matrix of six skills across four eras, showing memorization declining and judgment rising" id="matrix"></svg>
+      </div>
+      <aside class="notes">Look at how the skills shifted. Memorizing syntax and mastering one language mattered most in the C era and matter least today. What grew: knowing many technologies, seeing the whole system, learning new tools fast, and judgment, meaning you can look at a piece of work and say whether it's good. Keep the bottom rows in mind; we'll come back to them at the end.</aside>
+    </section>
+
+
+    <section class="slide divider era-ai">
+      <svg class="ring" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="var(--era)"><circle cx="200" cy="200" r="195" opacity=".12"/><circle cx="200" cy="200" r="150" opacity=".2"/><circle cx="200" cy="200" r="105" opacity=".3" stroke-dasharray="3 7"/><circle cx="200" cy="200" r="60" opacity=".45"/></g><circle class="pulse" cx="200" cy="5" r="5" fill="var(--era)"/><circle cx="350" cy="200" r="4" fill="var(--era)" opacity=".7"/></svg>
+      <span class="part rise">Part 02</span>
+      <p class="word rise" style="--d:1">Now</p>
+      <span class="rule rise" style="--d:2"></span>
+      <p class="cap rise" style="--d:3">What it means to be an engineer today</p>
+      <aside class="notes">That's the history. Now let's talk about what the job actually looks like today, day to day.</aside>
+    </section>
+
+    <section class="slide">
+      <div class="txt">
+        <span class="eyebrow rise" style="--era:var(--warm)">The job, rebalanced</span>
+        <h2 class="rise" style="--d:1;max-width:none">What changed for <em style="color:var(--warm)">the engineer</em></h2>
+      </div>
+      <div class="kpis">
+        <div class="kpi rise" style="--d:1"><span class="ib"><svg class="ic"><use href="#i-editor"/></svg></span><b>Typing</b><small>Writing every line by hand</small><span class="arr">↓</span></div>
+        <div class="kpi up rise" style="--d:2"><span class="ib"><svg class="ic"><use href="#i-ship"/></svg></span><b>Velocity</b><small>Idea to working prototype in hours</small><span class="arr">↑</span></div>
+        <div class="kpi up rise" style="--d:3"><span class="ib"><svg class="ic"><use href="#i-cloud"/></svg></span><b>Breadth</b><small>Frontend, backend, data, cloud: one person</small><span class="arr">↑</span></div>
+        <div class="kpi up rise" style="--d:4"><span class="ib"><svg class="ic"><use href="#i-eye"/></svg></span><b>Judgment</b><small>Deciding what's good enough to ship</small><span class="arr">↑</span></div>
+      </div>
+      <aside class="notes">Here's the job rebalanced. Typing goes down: you write far fewer lines by hand. Velocity goes way up: going from an idea to a working prototype can take hours instead of weeks. Breadth goes up: one engineer can now work across frontend, backend, data and cloud, because the AI fills in the syntax gaps. And judgment goes up the most, because someone has to decide what's actually good enough to ship.</aside>
+    </section>
+    <!-- 8 TOOLKIT -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise">Engineering today</span>
+        <h2 class="rise" style="--d:1">Today's <em>toolkit</em></h2>
+        <p class="cap rise" style="--d:2">You won't master all of these on day one. You'll learn each one fast.</p>
+      </div>
+      <div class="vis">
+        <div class="tools">
+          <div class="tool ai rise" style="--d:1"><span class="ib"><svg class="ic"><use href="#i-term"/></svg></span><b>Claude Code</b><small>AI agent in your terminal</small></div>
+          <div class="tool ai rise" style="--d:2"><span class="ib"><svg class="ic"><use href="#i-editor"/></svg></span><b>Cursor</b><small>AI-native code editor</small></div>
+          <div class="tool rise" style="--d:3"><span class="ib"><svg class="ic"><use href="#i-git"/></svg></span><b>Git &amp; GitHub</b><small>Review every change</small></div>
+          <div class="tool rise" style="--d:4"><span class="ib"><svg class="ic"><use href="#i-cloud"/></svg></span><b>AWS / GCP</b><small>Where it runs</small></div>
+          <div class="tool rise" style="--d:5"><span class="ib"><svg class="ic"><use href="#i-pulse"/></svg></span><b>Datadog / Grafana</b><small>See it live</small></div>
+          <div class="tool rise" style="--d:6"><span class="ib"><svg class="ic"><use href="#i-loop"/></svg></span><b>CI/CD</b><small>Test &amp; ship automatically</small></div>
+        </div>
+      </div>
+      <aside class="notes">This is the toolkit of an engineer today. An AI agent like Claude Code in the terminal, or an AI-native editor like Cursor. Git and GitHub to review every change. A cloud, AWS or GCP, where the code runs. Observability tools like Datadog or Grafana to see what's happening live. And CI/CD pipelines that test and ship automatically. Nobody expects you to know all of them on day one; what matters is that you pick each one up quickly.</aside>
+    </section>
+
+    <!-- 9 CODING NOW -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise">Writing code with Claude Code &amp; Cursor</span>
+        <h2 class="rise" style="--d:1">Less typing. <em>More reviewing.</em></h2>
+      </div>
+      <div class="vis">
+        <div class="flow rise" style="--d:1">
+          <div class="st"><span class="o"><svg class="ic"><use href="#i-brief"/></svg></span>Brief</div><span class="ar"></span>
+          <div class="st"><span class="o"><svg class="ic"><use href="#i-list"/></svg></span>Plan</div><span class="ar"></span>
+          <div class="st"><span class="o"><svg class="ic"><use href="#i-spark"/></svg></span>Generate</div><span class="ar"></span>
+          <div class="st hot"><span class="o"><svg class="ic"><use href="#i-eye"/></svg></span>Review</div><span class="ar"></span>
+          <div class="st"><span class="o"><svg class="ic"><use href="#i-ship"/></svg></span>Ship</div>
+        </div>
+        <div class="term rise" style="--d:3">
+          <div class="term-bar"><i></i><i></i><i></i><span>src/payments/gateway.ts · diff</span></div>
+<pre>  async function charge(order) {
+<span class="del">-   return gateway.charge(order);</span><span class="add">+   return retry(() =&gt; gateway.charge(order), {</span><span class="add">+     attempts: 3,</span><span class="add">+     backoff: 'exponential',</span><span class="add">+   });</span>  }</pre>
+          <div class="bubble rise" style="--d:6"><b>Your review:</b> the gateway blocks us after 2 calls. Use 2 attempts, plus an idempotency key so no one is charged twice.</div>
+        </div>
+      </div>
+      <aside class="notes">Here's what writing code feels like now. You write a brief, and the clearer it is the better the result. The agent proposes a plan, then generates the change. Then comes the most important step: you review the diff. In this example the agent added 3 retries, but I know our payment gateway blocks us after 2, and that a retry without an idempotency key can charge a customer twice. The AI couldn't know that. Then tests, then ship.</aside>
+    </section>
+
+
+    <section class="slide divider ">
+      <svg class="ring" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="var(--era)"><circle cx="200" cy="200" r="195" opacity=".12"/><circle cx="200" cy="200" r="150" opacity=".2"/><circle cx="200" cy="200" r="105" opacity=".3" stroke-dasharray="3 7"/><circle cx="200" cy="200" r="60" opacity=".45"/></g><circle class="pulse" cx="200" cy="5" r="5" fill="var(--era)"/><circle cx="350" cy="200" r="4" fill="var(--era)" opacity=".7"/></svg>
+      <span class="part rise">Part 03</span>
+      <p class="word rise" style="--d:1">Judgment</p>
+      <span class="rule rise" style="--d:2"></span>
+      <p class="cap rise" style="--d:3">What AI doesn't do for you</p>
+      <aside class="notes">So if the AI writes the code, what's left for the engineer? A lot. This is the part that makes or breaks you.</aside>
+    </section>
+    <!-- 10 ICEBERG -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise">What AI doesn't do for you</span>
+        <h2 class="rise" style="--d:1">It writes the tip. <em>You own the iceberg.</em></h2>
+      </div>
+      <div class="vis">
+        <svg viewBox="0 0 600 470" role="img" aria-label="Iceberg: the code AI writes is the small tip; architecture, trade-offs, testing, monitoring, security and maintainability lie below the water">
+          <defs>
+            <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#5ec8d8" stop-opacity=".22"/>
+              <stop offset="1" stop-color="#5ec8d8" stop-opacity=".02"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="120" width="600" height="350" fill="url(#water)"/>
+          <path d="M0,120 q25,-8 50,0 t50,0 t50,0 t50,0 t50,0 t50,0 t50,0 t50,0 t50,0 t50,0 t50,0 t50,0" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity=".7"/>
+          <polygon points="250,120 274,64 300,38 323,72 345,120" fill="var(--fg)" opacity=".92"/>
+          <line x1="330" y1="70" x2="380" y2="50" stroke="var(--fg-dim)"/>
+          <text x="386" y="54" font-family="IBM Plex Mono, monospace" font-size="13" fill="var(--fg)">the code AI writes</text>
+          <polygon points="250,120 345,120 405,168 470,250 452,350 362,432 240,445 148,372 118,268 170,180" fill="rgba(244,239,228,.07)" stroke="rgba(244,239,228,.25)"/>
+          <g font-family="IBM Plex Sans, sans-serif" font-size="16" fill="var(--fg)" text-anchor="middle">
+            <text class="rise" style="--d:2" x="296" y="190">Architecture &amp; design</text>
+            <text class="rise" style="--d:3" x="296" y="230">Trade-offs &amp; alternatives</text>
+            <text class="rise" style="--d:4" x="296" y="270">Testing</text>
+            <text class="rise" style="--d:5" x="296" y="310">Monitoring in production</text>
+            <text class="rise" style="--d:6" x="296" y="350">Security</text>
+            <text class="rise" style="--d:7" x="296" y="390">Maintainability</text>
+          </g>
+          <text x="560" y="455" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--warm)">← your job</text>
+        </svg>
+      </div>
+      <aside class="notes">This is the key slide. AI writes the part you can see: the code. Everything below the water is still on you. Is the architecture right? What are the alternatives? Is it tested? Will we know if it breaks in production? Is it secure? Can the next person change it safely? That's the difference between an engineer and someone who just types prompts.</aside>
+    </section>
+
+    <!-- 11 OPTIONS -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise">See the big picture</span>
+        <h2 class="rise" style="--d:1">The AI will pick one. <em>You need to know why.</em></h2>
+      </div>
+      <div class="vis">
+        <div class="board">
+          <div class="mrow rise" style="--d:1"><span class="cat">Cloud</span><span class="opts"><span class="opt">AWS</span><span class="vs">vs</span><span class="opt">GCP</span><span class="vs">vs</span><span class="opt">Azure</span></span></div>
+          <div class="mrow rise" style="--d:2"><span class="cat">Database</span><span class="opts"><span class="opt">Postgres</span><span class="vs">vs</span><span class="opt">MongoDB</span><span class="vs">vs</span><span class="opt">BigQuery</span></span></div>
+          <div class="mrow rise" style="--d:3"><span class="cat">Design</span><span class="opts"><span class="opt">Monolith</span><span class="vs">vs</span><span class="opt">Microservices</span></span></div>
+          <div class="mrow rise" style="--d:4"><span class="cat">Data flow</span><span class="opts"><span class="opt">Batch</span><span class="vs">vs</span><span class="opt">Streaming</span></span></div>
+          <div class="mrow rise" style="--d:5"><span class="cat">AI tools</span><span class="opts"><span class="opt">Claude Code</span><span class="vs">vs</span><span class="opt">Cursor</span><span class="vs">vs</span><span class="opt">Copilot</span></span></div>
+        </div>
+      </div>
+      <aside class="notes">The AI will happily make choices for you: a database, a cloud service, a design. You need to know the options and why you'd pick one over another: AWS or GCP, Postgres or MongoDB or BigQuery, a monolith or microservices, batch or streaming. The same applies to the AI tools themselves; Claude Code, Cursor and Copilot each fit different situations. Knowing the alternatives is what lets you say "no, not like that."</aside>
+    </section>
+
+    <!-- 12 PRODUCTION -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise">Prove it works</span>
+        <h2 class="rise" style="--d:1">Done means <em>working in production</em></h2>
+        <div class="chips rise" style="--d:2"><span class="chip">Test</span><span class="chip">Monitor</span><span class="chip">Secure</span><span class="chip">Keep it readable</span></div>
+      </div>
+      <div class="vis">
+        <div class="dash rise" style="--d:1">
+          <div class="term-bar"><i></i><i></i><i></i><span>payments-service · production</span></div>
+          <div class="dash-grid">
+            <div class="metric"><span class="lb">Tests <span class="pill ok">passing</span></span><span class="val">412 / 412</span><div class="bar"><div></div></div></div>
+            <div class="metric"><span class="lb">p95 latency <span class="pill ok">healthy</span></span><span class="val">182 ms</span>
+              <svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0,26 L20,24 L40,28 L60,21 L80,23 L100,18 L120,22 L140,16 L160,20 L180,14 L200,17 L200,40 L0,40Z" fill="rgba(94,200,216,.12)"/><path d="M0,26 L20,24 L40,28 L60,21 L80,23 L100,18 L120,22 L140,16 L160,20 L180,14 L200,17" fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>
+            <div class="metric"><span class="lb">Error rate <span class="pill ok">0.02%</span></span><span class="val">3 / 15k</span>
+              <svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M0,34 L30,34 L50,33 L70,34 L90,22 L100,33 L130,34 L160,34 L200,33" fill="none" stroke="var(--warm)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>
+            <div class="metric"><span class="lb">Security scan <span class="pill wn">2 low</span></span><span class="val" style="display:flex;align-items:center;gap:10px"><svg class="ic" style="width:28px;height:28px;color:var(--green)"><use href="#i-shield"/></svg>0 critical</span></div>
+          </div>
+          <div class="metric" style="border-top:1px solid var(--line);flex-direction:row;align-items:center;justify-content:space-between">
+            <span class="lb">Code review</span>
+            <span style="display:flex;align-items:center;gap:12px;font-size:14px;color:var(--fg-dim)"><span class="avatars"><span style="background:var(--olive)">RW</span><span style="background:var(--accent)">DN</span></span>Approved by 2</span>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">Code isn't done when it compiles, and it isn't done when the AI says "done." It's done when it works in production. That means tests that check real behavior, monitoring so you see latency and errors as they happen, security scans, and code that another person can read and maintain. This is a discipline, and it's very learnable.</aside>
+    </section>
+
+
+    <section class="slide divider " style="--era:var(--red)">
+      <svg class="ring" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="var(--era)"><circle cx="200" cy="200" r="195" opacity=".12"/><circle cx="200" cy="200" r="150" opacity=".2"/><circle cx="200" cy="200" r="105" opacity=".3" stroke-dasharray="3 7"/><circle cx="200" cy="200" r="60" opacity=".45"/></g><circle class="pulse" cx="200" cy="5" r="5" fill="var(--era)"/><circle cx="350" cy="200" r="4" fill="var(--era)" opacity=".7"/></svg>
+      <span class="part rise">Part 04</span>
+      <p class="word rise" style="--d:1">Risks</p>
+      <span class="rule rise" style="--d:2"></span>
+      <p class="cap rise" style="--d:3">Where AI coding goes wrong</p>
+      <aside class="notes">AI coding is powerful, but it comes with real risks. Here are the two I see most often.</aside>
+    </section>
+    <!-- 13 RISK: VOLUME -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise" style="--era:var(--red)">Risk 01</span>
+        <h2 class="rise" style="--d:1">More code is not <em style="color:var(--red)">better code</em></h2>
+        <div class="chips rise" style="--d:2" ><span class="chip" style="--era:var(--red)">Hard to maintain</span><span class="chip" style="--era:var(--red)">Hidden bugs</span></div>
+      </div>
+      <div class="vis">
+        <svg viewBox="0 0 580 370" role="img" aria-label="Chart: code written grows much faster than code anyone understands; the gap between them is the risk zone">
+          <line x1="60" y1="310" x2="550" y2="310" stroke="var(--line)" stroke-width="1.5"/>
+          <line x1="60" y1="30" x2="60" y2="310" stroke="var(--line)" stroke-width="1.5"/>
+          <text x="550" y="335" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--fg-dim)">time with AI →</text>
+          <text x="48" y="40" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--fg-dim)" transform="rotate(-90 48 40)">lines of code</text>
+          <path d="M60,300 C200,282 320,160 530,40 L530,220 C330,244 200,272 60,300 Z" fill="var(--red)" opacity=".13"/>
+          <path class="draw" d="M60,300 C200,282 320,160 530,40" fill="none" stroke="var(--warm)" stroke-width="3"/>
+          <path class="draw" d="M60,300 C200,272 330,244 530,220" fill="none" stroke="var(--accent)" stroke-width="3" style="--d:2"/>
+          <circle cx="530" cy="40" r="5" fill="var(--warm)"/>
+          <circle cx="530" cy="220" r="5" fill="var(--accent)"/>
+          <text x="520" y="28" text-anchor="end" font-family="IBM Plex Sans, sans-serif" font-size="15" fill="var(--warm)">code written</text>
+          <text x="520" y="250" text-anchor="end" font-family="IBM Plex Sans, sans-serif" font-size="15" fill="var(--accent)">code anyone understands</text>
+          <text class="pulse" x="420" y="150" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" fill="var(--red)" letter-spacing="2">RISK ZONE</text>
+        </svg>
+      </div>
+      <aside class="notes">The first big risk: AI makes it easy to produce huge amounts of code. The amount of code grows much faster than the amount anyone actually understands. That gap is where bugs hide and where systems become painful to maintain. Every line you ship is a line someone has to own.</aside>
+    </section>
+
+    <!-- 14 RISK: MISUNDERSTOOD -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise" style="--era:var(--red)">Risk 02</span>
+        <h2 class="rise" style="--d:1">It does what you said, <em style="color:var(--red)">not what you meant</em></h2>
+        <span class="tag rise" style="--d:2">Illustrative example</span>
+      </div>
+      <div class="vis">
+        <div class="story">
+          <div class="card rise" style="--d:1"><span class="who">You</span><span class="what">"Clean up the inactive users."</span></div>
+          <div class="card ai rise" style="--d:3"><span class="who">AI</span><span class="what"><code>DELETE FROM users WHERE last_login &lt; NOW() - INTERVAL '30 days';</code><br><span class="tag">✓ done, confidently</span></span></div>
+          <div class="card rise" style="--d:5"><span class="who">Meant</span><span class="what">Free accounts, inactive 2+ years. Archive them, don't delete.</span></div>
+          <div class="card bad rise" style="--d:7"><span class="who">Result</span><span class="what">Thousands of paying customers gone on Monday morning.</span></div>
+        </div>
+      </div>
+      <aside class="notes">The second risk: the AI does exactly what you said, not what you meant. In this made-up but realistic example, someone asked to clean up inactive users. The AI picked 30 days on its own and deleted them. The product team meant free accounts inactive for two years, and wanted them archived, not deleted. The AI rarely says "I'm not sure." Clear briefs and careful review are your defense.</aside>
+    </section>
+
+    <!-- 15 WHY YOU -->
+    <section class="slide split era-you">
+      <div class="txt">
+        <span class="eyebrow rise">Part 05 · Now, about you</span>
+        <p class="big rise" style="--d:1">The AI era rewards <em>what you already trained for.</em></p>
+      </div>
+      <div class="vis">
+        <svg viewBox="0 0 600 460" role="img" aria-label="Topographic map with a marked objective">
+          <g data-topo="var(--olive)" data-cx="320" data-cy="220"></g>
+          <g class="pop" style="--d:3">
+            <circle cx="320" cy="220" r="14" fill="var(--olive)"/>
+            <circle class="pulse" cx="320" cy="220" r="32" fill="none" stroke="var(--olive)" stroke-width="2"/>
+            <line x1="320" y1="170" x2="320" y2="196" stroke="var(--olive)" stroke-width="2"/>
+            <line x1="320" y1="244" x2="320" y2="270" stroke="var(--olive)" stroke-width="2"/>
+            <line x1="270" y1="220" x2="296" y2="220" stroke="var(--olive)" stroke-width="2"/>
+            <line x1="344" y1="220" x2="370" y2="220" stroke="var(--olive)" stroke-width="2"/>
+          </g>
+        </svg>
+      </div>
+      <aside class="notes">So why am I telling all this to you specifically? Because everything I just described as the hard part of engineering today is something you have already trained for. Not the syntax, which the AI handles, but the mindset.</aside>
+    </section>
+
+    <!-- 16 SKILLS MAP -->
+    <section class="slide era-you">
+      <div class="txt">
+        <span class="eyebrow rise">Your skills, translated</span>
+        <h2 class="rise" style="--d:1;max-width:none">You already have <em>the hard part</em></h2>
+      </div>
+      <div class="map">
+        <div class="maphead rise" style="--d:1"><span>From your service</span><span></span><span>In engineering</span></div>
+        <div class="mr rise" style="--d:2"><span class="a"><svg class="ic"><use href="#i-flag"/></svg>Taking initiative</span><span class="lnk"></span><span class="b">Own the problem. Don't wait for a ticket.</span></div>
+        <div class="mr rise" style="--d:3"><span class="a"><svg class="ic"><use href="#i-loop"/></svg>Adapting fast</span><span class="lnk"></span><span class="b">New tools every few months? Normal.</span></div>
+        <div class="mr rise" style="--d:4"><span class="a"><svg class="ic"><use href="#i-compass"/></svg>Leaving your comfort zone</span><span class="lnk"></span><span class="b">Unfamiliar tech? Learn it and ship.</span></div>
+        <div class="mr rise" style="--d:5"><span class="a"><svg class="ic"><use href="#i-brief"/></svg>Mission briefing</span><span class="lnk"></span><span class="b">A clear brief for the AI agent.</span></div>
+        <div class="mr rise" style="--d:6"><span class="a"><svg class="ic"><use href="#i-rewind"/></svg>Honest debriefs</span><span class="lnk"></span><span class="b">Code reviews and postmortems.</span></div>
+        <div class="mr rise" style="--d:7"><span class="a"><svg class="ic"><use href="#i-pulse"/></svg>Calm under pressure</span><span class="lnk"></span><span class="b">The 3 AM production incident.</span></div>
+      </div>
+      <aside class="notes">Taking initiative: the engineers who grow fastest are the ones who own a problem without waiting to be told. Adapting fast: the tools change every few months, and you've lived with plans changing every hour. Leaving your comfort zone: you'll be dropped into technologies you've never seen, and you know how to function there. A mission briefing is exactly what a good brief to an AI agent looks like. Honest debriefs are what we call code reviews and postmortems. And staying calm under pressure is what a production incident at 3 AM needs.</aside>
+    </section>
+
+    <!-- 17 CLOSING -->
+    <section class="slide era-you">
+      <div class="txt">
+        <span class="eyebrow rise">Your next mission</span>
+        <p class="big rise" style="--d:1">Initiative. Adaptability. Courage. <em>That's the stack.</em></p>
+      </div>
+      <div class="acts">
+        <div class="act rise" style="--d:2"><span class="n">THIS WEEK</span><svg class="ic" style="color:var(--olive)"><use href="#i-term"/></svg><b>Install Claude Code or Cursor</b></div>
+        <div class="act rise" style="--d:3"><span class="n">THIS MONTH</span><svg class="ic" style="color:var(--olive)"><use href="#i-build"/></svg><b>Build something you actually need</b></div>
+        <div class="act rise" style="--d:4"><span class="n">THEN</span><svg class="ic" style="color:var(--olive)"><use href="#i-ship"/></svg><b>Ship it, show someone, repeat</b></div>
+      </div>
+      <aside class="notes">The AI era rewards people who take initiative, learn fast, and aren't afraid of the unknown. That's you. My suggestion: this week, install Claude Code or Cursor. This month, build something small that you actually need. Then ship it, show it to someone, and do it again. Each time you'll learn more than any course can teach you.</aside>
+    </section>
+
+    <!-- 18 THANKS -->
+    <section class="slide split era-you">
+      <div class="txt">
+        <span class="eyebrow rise">Thank you</span>
+        <h1 class="rise" style="--d:1">Questions?</h1>
+        <div class="footer-name rise" style="--d:2"><span>Ruli Weisbach</span><i></i><span>EVP of R&amp;D, AppsFlyer</span></div>
+        <span class="rise" style="--d:3;font-family:var(--font-mono);color:var(--accent);font-size:15px">ruli.weisbach@appsflyer.com</span>
+      </div>
+      <div class="vis">
+        <div class="term rise" style="--d:2">
+          <div class="term-bar"><i></i><i></i><i></i><span>~/your-next-chapter</span></div>
+<pre><span class="k-warm">&gt;</span> git checkout -b civilian-life
+<span class="k-ok">Switched to a new branch 'civilian-life'</span>
+<span class="k-warm">&gt;</span> start engineering --mode=initiative
+<span class="k-acc">●</span> Loading skills: adapt, learn, lead
+<span class="k-ok">✓ Ready.</span> <span class="blink">█</span></pre>
+        </div>
+      </div>
+      <aside class="notes">Thank you. I'm happy to take questions, and you're welcome to reach out to me directly afterwards.</aside>
+    </section>
+
+  </main>
+
+  <div class="notes-panel" id="notesPanel" hidden>
+    <div class="lb">Speaker notes · <span id="npNum">1</span></div>
+    <p id="npText"></p>
+  </div>
+
+  <div class="controls">
+    <div class="ctl-l"><button class="txt-btn" id="notesBtn" type="button" aria-pressed="false">Notes <kbd>N</kbd></button></div>
+    <div class="ctl-c">
+      <button class="nav-btn" id="prevBtn" type="button" aria-label="Previous slide">‹</button>
+      <div class="dots" id="dots"></div>
+      <button class="nav-btn" id="nextBtn" type="button" aria-label="Next slide">›</button>
+    </div>
+    <div class="ctl-r"><button class="txt-btn" id="fsBtn" type="button">Fullscreen <kbd>F</kbd></button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent, text){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  // topographic contours
+  document.querySelectorAll('[data-topo]').forEach(function(g){
+    var col = g.getAttribute('data-topo'), cx = +g.getAttribute('data-cx'), cy = +g.getAttribute('data-cy');
+    for (var k = 0; k < 9; k++){
+      var base = 34 + k * 30, d = '';
+      for (var i = 0; i <= 96; i++){
+        var t = i / 96 * Math.PI * 2;
+        var r = base * (1 + .13 * Math.sin(3 * t + k * .45) + .07 * Math.sin(5 * t + 1.3 + k * .2));
+        var x = cx + r * Math.cos(t) * 1.25, y = cy + r * Math.sin(t) * .85;
+        d += (i ? 'L' : 'M') + x.toFixed(1) + ',' + y.toFixed(1);
+      }
+      el('path', { d: d + 'Z', fill: 'none', stroke: col, 'stroke-width': 1.2, opacity: (0.55 - k * 0.05).toFixed(2) }, g);
+    }
+  });
+
+  // cloud honeycomb
+  var hex = document.getElementById('hexes');
+  var cells = [[80,183,'S3'],[152,141.5,'Kafka',1],[152,224.5,'Redis'],[224,100,'EC2'],[224,183,'Spark',1],[224,266,'Postgres'],
+    [296,141.5,'Kubernetes',1],[296,224.5,'Airflow'],[368,100,'Lambda'],[368,183,'BigQuery',1],[368,266,'CDN'],
+    [440,141.5,'Docker'],[440,224.5,'Terraform',1],[512,183,'Grafana']];
+  var r = 46, dx = r / 2, dy = r * .866;
+  cells.forEach(function(c, i){
+    var x = c[0], y = c[1], hot = c[3];
+    var g = el('g', { 'class': 'pop', style: '--d:' + (i % 7) }, hex);
+    var pts = [[x - r, y], [x - dx, y - dy], [x + dx, y - dy], [x + r, y], [x + dx, y + dy], [x - dx, y + dy]].map(function(p){ return p.join(','); }).join(' ');
+    el('polygon', { points: pts, fill: hot ? 'rgba(170,158,240,.16)' : 'var(--panel)', stroke: hot ? 'var(--violet)' : 'rgba(170,158,240,.3)', 'stroke-width': 1.5 }, g);
+    el('text', { x: x, y: y + 4, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono, monospace', 'font-size': c[2].length > 8 ? 10.5 : 12, fill: hot ? 'var(--fg)' : 'var(--fg-dim)' }, g, c[2]);
+  });
+  el('text', { x: 296, y: 330, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono, monospace', 'font-size': 12, fill: 'var(--violet)' }, hex, '…and hundreds more');
+
+  // skills matrix
+  var mx = document.getElementById('matrix');
+  var eras = [['C','1990s','var(--green)'],['Web','2000s','var(--accent)'],['Cloud','2010s','var(--violet)'],['AI','now','var(--warm)']];
+  var rows = [['Memorizing syntax',[5,4,3,1]],['Mastering one language',[5,4,3,1]],['Knowing many technologies',[1,3,5,4]],
+    ['Seeing the whole system',[2,3,4,5]],['Learning new tools fast',[2,3,4,5]],["Judging what's good",[3,3,4,5]]];
+  eras.forEach(function(e, i){
+    var x = 370 + i * 105;
+    el('text', { x: x, y: 34, 'text-anchor': 'middle', 'font-family': 'IBM Plex Sans, sans-serif', 'font-size': 17, 'font-weight': 600, fill: e[2] }, mx, e[0]);
+    el('text', { x: x, y: 54, 'text-anchor': 'middle', 'font-family': 'IBM Plex Mono, monospace', 'font-size': 11, fill: 'var(--fg-dim)' }, mx, e[1]);
+  });
+  rows.forEach(function(row, j){
+    var y = 100 + j * 54, v = row[1], up = v[3] > v[0];
+    var col = up ? 'var(--warm)' : 'var(--fg-dim)';
+    el('line', { x1: 370, y1: y, x2: 685, y2: y, stroke: 'var(--line)', 'stroke-width': 1 }, mx);
+    el('text', { x: 330, y: y + 5, 'text-anchor': 'end', 'font-family': 'IBM Plex Sans, sans-serif', 'font-size': 15.5, fill: up ? 'var(--fg)' : 'var(--fg-dim)' }, mx, row[0]);
+    v.forEach(function(val, i){
+      el('circle', { cx: 370 + i * 105, cy: y, r: 3 + val * 3.8, fill: col, opacity: up ? (.35 + val * .13).toFixed(2) : .45, 'class': 'pop', style: '--d:' + (i + j) }, mx);
+    });
+    el('text', { x: 735, y: y + 6, 'text-anchor': 'middle', 'font-family': 'IBM Plex Sans, sans-serif', 'font-size': 20, fill: col }, mx, up ? '↑' : '↓');
+  });
+
+  // deck navigation
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length, idx = 0;
+  var counter = document.getElementById('counter'), fill = document.getElementById('progressFill');
+  var dotsWrap = document.getElementById('dots'), prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn');
+  var notesPanel = document.getElementById('notesPanel'), npText = document.getElementById('npText'), npNum = document.getElementById('npNum');
+  var notesBtn = document.getElementById('notesBtn'), fsBtn = document.getElementById('fsBtn');
+  var dots = [];
+
+  slides.forEach(function(_, i){
+    var d = document.createElement('button');
+    d.className = 'dot'; d.type = 'button';
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    d.addEventListener('click', function(){ go(i); });
+    dotsWrap.appendChild(d); dots.push(d);
+  });
+
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  function render(){
+    slides.forEach(function(s, i){ s.classList.toggle('active', i === idx); });
+    dots.forEach(function(d, i){ d.classList.toggle('active', i === idx); });
+    counter.textContent = pad(idx + 1) + ' / ' + pad(total);
+    fill.style.width = ((idx + 1) / total * 100) + '%';
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+    var n = slides[idx].querySelector('.notes');
+    npText.textContent = n ? n.textContent : '';
+    npNum.textContent = 'slide ' + (idx + 1);
+    try { history.replaceState(null, '', '#' + (idx + 1)); } catch (e) {}
+  }
+  function go(n){ idx = Math.max(0, Math.min(total - 1, n)); render(); }
+  function next(){ go(idx + 1); }
+  function prev(){ go(idx - 1); }
+
+  function setNotes(on){
+    notesPanel.hidden = !on;
+    notesBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    try { localStorage.setItem('deck-notes', on ? '1' : '0'); } catch (e) {}
+  }
+  var startNotes = false;
+  try { startNotes = localStorage.getItem('deck-notes') === '1'; } catch (e) {}
+  setNotes(startNotes);
+  notesBtn.addEventListener('click', function(){ setNotes(notesPanel.hidden); });
+
+  function toggleFs(){
+    try {
+      if (document.fullscreenElement) { document.exitFullscreen().catch(function(){}); }
+      else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(function(){}); }
+    } catch (e) {}
+  }
+  if (!document.documentElement.requestFullscreen) fsBtn.hidden = true;
+  fsBtn.addEventListener('click', toggleFs);
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+  window.addEventListener('keydown', function(e){
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' '){ e.preventDefault(); next(); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp'){ e.preventDefault(); prev(); }
+    else if (k === 'Home'){ go(0); }
+    else if (k === 'End'){ go(total - 1); }
+    else if (k === 'n' || k === 'N'){ setNotes(notesPanel.hidden); }
+    else if (k === 'f' || k === 'F'){ toggleFs(); }
+  });
+
+  var stage = document.getElementById('stage'), touchX = null, touchY = null;
+  stage.addEventListener('touchstart', function(e){ touchX = e.changedTouches[0].clientX; touchY = e.changedTouches[0].clientY; }, { passive: true });
+  stage.addEventListener('touchend', function(e){
+    if (touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX, dy = e.changedTouches[0].clientY - touchY;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){ dx < 0 ? next() : prev(); }
+    touchX = null;
+  }, { passive: true });
+
+  var m = location.hash.match(/^#(\d+)$/);
+  if (m){ idx = Math.max(0, Math.min(total - 1, parseInt(m[1], 10) - 1)); }
+  render();
+})();
+</script>
+</body>
+</html>
