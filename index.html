@@ -215,6 +215,65 @@
   .kpi.up .arr{color:var(--warm)}
   @media (max-width:820px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} .divider .ring{opacity:.25} }
 
+  /* AppsFlyer intro */
+  .wide-vis{min-width:0;width:100%}
+  .wide-vis > svg{width:100%;height:auto;max-height:min(62vh,600px);display:block}
+  .flow-line{stroke-dasharray:3 7;animation:flowdash 1.4s linear infinite}
+  @keyframes flowdash{to{stroke-dashoffset:-20}}
+  .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;max-width:1100px;width:100%}
+  .stat{background:var(--bg-2);padding:clamp(18px,2.4vw,32px);display:flex;flex-direction:column;gap:10px;min-width:0}
+  .stat .num{font-family:var(--font-display);font-weight:900;font-size:clamp(40px,5.4vw,76px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat .num span{color:var(--accent)}
+  .stat.infra .num span{color:var(--violet)}
+  .stat .lbl{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-dim);line-height:1.5}
+  .afe{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:18px 28px;align-items:center;max-width:1120px;width:100%}
+  .afe .badge{grid-row:1 / span 2;grid-column:2;width:clamp(170px,19vw,240px);height:auto}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;display:flex;gap:16px;align-items:flex-start;min-width:0}
+  .q .ib{width:44px;height:44px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;background:rgba(94,200,216,.12);color:var(--accent)}
+  .q b{display:block;font-family:var(--font-display);font-weight:700;font-size:clamp(18px,1.9vw,24px);line-height:1.15;margin-bottom:6px}
+  .q .t{font-size:clamp(13.5px,1.3vw,15.5px);color:var(--fg-dim);line-height:1.45}
+  .q.l{flex-direction:row-reverse;text-align:right}
+  @media (max-width:820px){
+    .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .afe{grid-template-columns:1fr}
+    .afe .badge{grid-row:auto;grid-column:auto;justify-self:center;width:150px}
+    .q.l{flex-direction:row;text-align:left}
+  }
+  @media (max-width:480px){ .stats{grid-template-columns:1fr} }
+  @media (prefers-reduced-motion:reduce){ .flow-line{animation:none} }
+
+  /* scale: crashing wave */
+  .scale-slide .sea{position:absolute;inset:0;z-index:2;pointer-events:none}
+  .scale-slide .word{font-size:clamp(110px,22vw,320px);transition:color 1s ease}
+  .scale-slide .word.drowned{color:#bfe9f0;filter:blur(1.4px);animation:wob 3.2s ease-in-out infinite !important;opacity:1}
+  @keyframes wob{0%,100%{transform:translate(0,0) skewX(0)}25%{transform:translate(4px,-3px) skewX(2deg)}75%{transform:translate(-4px,3px) skewX(-2deg)}}
+  .scale-slide .after-cap{position:relative;z-index:3;opacity:0;transform:translateY(12px);transition:opacity .9s ease,transform .9s ease;color:var(--fg);font-size:clamp(18px,2.2vw,26px)}
+  .scale-slide .after-cap.show{opacity:1;transform:none}
+  .slide.active.shake{animation:shake .6s ease}
+  @keyframes shake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(5px,-2px)}30%,50%,70%{transform:translate(-10px,4px)}40%,60%{transform:translate(10px,-4px)}}
+
+  /* interview prep */
+  .prep{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1150px;width:100%}
+  .pc{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+  .pc .hd{display:flex;align-items:center;gap:12px}
+  .pc .ib{width:42px;height:42px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;background:rgba(188,200,130,.14);color:var(--olive)}
+  .pc b{font-family:var(--font-display);font-weight:700;font-size:clamp(19px,1.9vw,24px);line-height:1.15}
+  .pc .sub{font-size:14.5px;color:var(--fg-dim);line-height:1.4}
+  .pc .viz{margin-top:6px;flex:1;background:var(--term);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+  .repo{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12.5px;color:var(--fg-dim);flex-wrap:wrap}
+  .repo b{font-family:var(--font-mono);font-size:12.5px;color:var(--accent);font-weight:500}
+  .meta{font-family:var(--font-mono);font-size:11.5px;color:var(--fg-dim)}
+  .graph{display:grid;grid-template-columns:repeat(14,1fr);gap:3px}
+  .graph span{aspect-ratio:1;border-radius:2px;background:var(--olive)}
+  .why-q{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--olive)}
+  .why{font-size:14.5px;padding:8px 12px;border-radius:10px;background:rgba(244,239,228,.05);color:var(--fg-dim)}
+  .why b{font-family:var(--font-body);font-size:14.5px;font-weight:600;color:var(--fg)}
+  .bub{font-size:13.5px;line-height:1.4;padding:9px 12px;border-radius:12px;max-width:92%}
+  .bub.you{align-self:flex-start;background:rgba(188,200,130,.12);border:1px solid rgba(188,200,130,.4);border-bottom-left-radius:3px}
+  .bub.them{align-self:flex-end;background:rgba(94,200,216,.1);border:1px solid rgba(94,200,216,.4);border-bottom-right-radius:3px}
+  .bub.no{align-self:flex-start;background:rgba(239,111,108,.08);border:1px dashed rgba(239,111,108,.55);color:var(--red)}
+  @media (max-width:820px){ .prep{grid-template-columns:1fr} }
+
   /* notes drawer + controls */
   .notes-panel{flex:0 0 auto;max-height:30%;overflow-y:auto;margin:0 clamp(16px,4vw,44px);padding:14px 18px;
     border:1px solid rgba(242,153,74,.35);border-radius:12px;background:rgba(19,30,49,.92)}
@@ -282,7 +341,7 @@
 <div class="deck">
   <div class="chrome">
     <span class="brand"><i></i>From the field to the code</span>
-    <span id="counter">01 / 23</span>
+    <span id="counter">01 / 30</span>
   </div>
   <div class="progress"><div id="progressFill"></div></div>
 
@@ -314,6 +373,89 @@
       <aside class="notes">Welcome. In the next 20 minutes I want to do one thing: convince you that software engineering has changed so much that the skills you built in the army are now among the most valuable an engineer can have. I'll start with a short history, show what engineering looks like today, and finish with why I think you're in a great position to succeed.</aside>
     </section>
 
+
+    <!-- AF 1 PLATFORM -->
+    <section class="slide">
+      <div class="txt">
+        <span class="eyebrow rise">About AppsFlyer</span>
+        <h2 class="rise" style="--d:1;max-width:none">The AppsFlyer <em>Cloud Platform</em></h2>
+        <p class="cap rise" style="--d:2;max-width:none">Privacy-preserving marketing measurement</p>
+      </div>
+      <div class="wide-vis rise" style="--d:2">
+        <svg viewBox="0 0 960 470" role="img" aria-label="Channels on the left flow into the AppsFlyer platform, which powers measurement products on the right and connects to over 10,000 partners" id="platform"></svg>
+      </div>
+      <aside class="notes">A quick intro to AppsFlyer. We're a cloud platform that helps brands measure and improve their marketing while protecting user privacy. Brands integrate once, through our universal SDK or server-to-server, across every channel: mobile, web, CTV, SMS, email, social, display and search. On top of that data we provide attribution, deep linking, audiences, predictive analytics, ROI and LTV reporting, cost and ad revenue aggregation, cohorts and lift testing. And we connect to more than 10,000 integrated partners.</aside>
+    </section>
+
+    <!-- AF 2 BEFORE -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise" style="--era:var(--red)">Before AppsFlyer</span>
+        <h2 class="rise" style="--d:1">Everyone wired <em style="color:var(--red)">to everyone</em></h2>
+        <p class="cap rise" style="--d:2">Every brand, every partner, one integration at a time.</p>
+      </div>
+      <div class="vis"><svg viewBox="0 0 800 400" role="img" aria-label="Tangled lines connecting every brand to every partner" id="eco-before"></svg></div>
+      <aside class="notes">Before AppsFlyer, every brand had to integrate separately with every ad network and partner. Each one measured differently, and nobody had a single trusted view of what was actually working.</aside>
+    </section>
+
+    <!-- AF 3 AFTER -->
+    <section class="slide split">
+      <div class="txt">
+        <span class="eyebrow rise">After AppsFlyer</span>
+        <h2 class="rise" style="--d:1">Integrate once. <em>Connect to everything.</em></h2>
+        <p class="cap rise" style="--d:2">One neutral, trusted source of truth.</p>
+      </div>
+      <div class="vis"><svg viewBox="0 0 800 400" role="img" aria-label="All brands and partners connected through AppsFlyer in the center" id="eco-after"></svg></div>
+      <aside class="notes">With AppsFlyer in the middle, a brand integrates once and connects to the whole ecosystem. Everyone works from the same neutral, trusted measurement.</aside>
+    </section>
+
+    <!-- AF 4 NUMBERS -->
+    <section class="slide">
+      <div class="txt">
+        <span class="eyebrow rise">AppsFlyer handles</span>
+        <h2 class="rise" style="--d:1;max-width:none">Every <em>single day</em></h2>
+      </div>
+      <div class="stats">
+        <div class="stat rise" style="--d:1"><span class="num" data-to="120" data-suf="B">120<span>B</span></span><span class="lbl">Clicks on ads</span></div>
+        <div class="stat rise" style="--d:2"><span class="num" data-to="180" data-suf="B">180<span>B</span></span><span class="lbl">Ad views</span></div>
+        <div class="stat rise" style="--d:3"><span class="num" data-to="40" data-suf="B">40<span>B</span></span><span class="lbl">App events</span></div>
+        <div class="stat rise" style="--d:4"><span class="num" data-to="250" data-suf="M">250<span>M</span></span><span class="lbl">Conversions</span></div>
+        <div class="stat infra rise" style="--d:5"><span class="num" data-to="20000" data-suf="">20,000</span><span class="lbl">Instances in AWS cloud</span></div>
+        <div class="stat infra rise" style="--d:6"><span class="num" data-to="30" data-suf="PB">30<span>PB</span></span><span class="lbl">Of data (30M gigabytes)</span></div>
+      </div>
+      <aside class="notes">Here's the scale we handle every day: 120 billion ad clicks, 180 billion ad views, 40 billion app events and 250 million conversions. It runs on about 20,000 instances in AWS, with 30 petabytes of data. That's 30 million gigabytes.</aside>
+    </section>
+
+    <!-- AF 5 SCALE -->
+    <section class="slide divider scale-slide">
+      <canvas class="sea" aria-hidden="true"></canvas>
+      <span class="part rise">The challenge</span>
+      <p class="word rise" style="--d:1">Scale</p>
+      <span class="rule rise" style="--d:2"></span>
+      <p class="cap after-cap">At this size, a small bug is never small.</p>
+      <aside class="notes">Numbers like these change what engineering means. At this scale a small bug isn't small: it hits billions of events within minutes, and it can drown you. Which brings me to the kind of engineers we need.</aside>
+    </section>
+
+    <!-- AF 6 ENGINEER -->
+    <section class="slide">
+      <div class="txt">
+        <span class="eyebrow rise">What we look for</span>
+        <h2 class="rise" style="--d:1;max-width:none">The AppsFlyer <em>Engineer</em></h2>
+      </div>
+      <div class="afe">
+        <svg class="badge pop" style="--d:1" viewBox="0 0 240 260" role="img" aria-label="AppsFlyer engineer badge">
+          <polygon points="120,14 220,72 220,188 120,246 20,188 20,72" fill="var(--panel)" stroke="var(--accent)" stroke-width="2"/>
+          <polygon class="pulse" points="120,36 201,83 201,177 120,224 39,177 39,83" fill="none" stroke="var(--accent)" stroke-opacity=".45" stroke-dasharray="4 6"/>
+          <text x="120" y="138" text-anchor="middle" font-family="Fraunces, serif" font-weight="900" font-size="58" fill="var(--fg)">AF</text>
+          <text x="120" y="172" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12.5" letter-spacing="4" fill="var(--accent)">ENGINEER</text>
+        </svg>
+        <div class="q l rise" style="--d:2"><span class="ib"><svg class="ic"><use href="#i-flag"/></svg></span><span><b>Decides under pressure</b><span class="t">Makes the call with partial data and the clock running.</span></span></div>
+        <div class="q rise" style="--d:3"><span class="ib"><svg class="ic"><use href="#i-pulse"/></svg></span><span><b>Stays calm when all hell breaks loose</b><span class="t">Production is on fire. Breathe, triage, fix.</span></span></div>
+        <div class="q l rise" style="--d:4"><span class="ib"><svg class="ic"><use href="#i-spark"/></svg></span><span><b>Creative problem solver</b><span class="t">No playbook? Writes one.</span></span></div>
+        <div class="q rise" style="--d:5"><span class="ib"><svg class="ic"><use href="#i-loop"/></svg></span><span><b>Adapts to the challenge</b><span class="t">New scale, new tech, new rules. Adjusts and keeps moving.</span></span></div>
+      </div>
+      <aside class="notes">So what do we look for in an AppsFlyer engineer? People who make decisions under pressure, often with incomplete information. People who stay calm when all hell breaks loose in production. People who get creative when there's no playbook. And people who adapt when the challenge changes, which at our scale happens all the time. Remember these four. I'll come back to them.</aside>
+    </section>
 
     <section class="slide divider era-c">
       <svg class="ring" viewBox="0 0 400 400" aria-hidden="true"><g fill="none" stroke="var(--era)"><circle cx="200" cy="200" r="195" opacity=".12"/><circle cx="200" cy="200" r="150" opacity=".2"/><circle cx="200" cy="200" r="105" opacity=".3" stroke-dasharray="3 7"/><circle cx="200" cy="200" r="60" opacity=".45"/></g><circle class="pulse" cx="200" cy="5" r="5" fill="var(--era)"/><circle cx="350" cy="200" r="4" fill="var(--era)" opacity=".7"/></svg>
@@ -737,7 +879,7 @@ $ <span class="blink">█</span></pre>
         <div class="mr rise" style="--d:6"><span class="a"><svg class="ic"><use href="#i-rewind"/></svg>Honest debriefs</span><span class="lnk"></span><span class="b">Code reviews and postmortems.</span></div>
         <div class="mr rise" style="--d:7"><span class="a"><svg class="ic"><use href="#i-pulse"/></svg>Calm under pressure</span><span class="lnk"></span><span class="b">The 3 AM production incident.</span></div>
       </div>
-      <aside class="notes">Taking initiative: the engineers who grow fastest are the ones who own a problem without waiting to be told. Adapting fast: the tools change every few months, and you've lived with plans changing every hour. Leaving your comfort zone: you'll be dropped into technologies you've never seen, and you know how to function there. A mission briefing is exactly what a good brief to an AI agent looks like. Honest debriefs are what we call code reviews and postmortems. And staying calm under pressure is what a production incident at 3 AM needs.</aside>
+      <aside class="notes">Taking initiative: the engineers who grow fastest are the ones who own a problem without waiting to be told. Adapting fast: the tools change every few months, and you've lived with plans changing every hour. Leaving your comfort zone: you'll be dropped into technologies you've never seen, and you know how to function there. A mission briefing is exactly what a good brief to an AI agent looks like. Honest debriefs are what we call code reviews and postmortems. And staying calm under pressure is what a production incident at 3 AM needs. Notice something? These are the same qualities I described for the AppsFlyer engineer at the start: decisions under pressure, staying calm, creativity, and adaptability.</aside>
     </section>
 
     <!-- 17 CLOSING -->
@@ -752,6 +894,45 @@ $ <span class="blink">█</span></pre>
         <div class="act rise" style="--d:4"><span class="n">THEN</span><svg class="ic" style="color:var(--olive)"><use href="#i-ship"/></svg><b>Ship it, show someone, repeat</b></div>
       </div>
       <aside class="notes">The AI era rewards people who take initiative, learn fast, and aren't afraid of the unknown. That's you. My suggestion: this week, install Claude Code or Cursor. This month, build something small that you actually need. Then ship it, show it to someone, and do it again. Each time you'll learn more than any course can teach you.</aside>
+    </section>
+
+    <!-- INTERVIEW PREP -->
+    <section class="slide era-you">
+      <div class="txt">
+        <span class="eyebrow rise">Interview prep</span>
+        <h2 class="rise" style="--d:1;max-width:none">How to <em>stand out</em> in the interview</h2>
+      </div>
+      <div class="prep">
+        <div class="pc rise" style="--d:2">
+          <div class="hd"><span class="ib"><svg class="ic"><use href="#i-build"/></svg></span><b>Build something real</b></div>
+          <span class="sub">Make it work. Put it on GitHub. Talk about it.</span>
+          <div class="viz">
+            <div class="repo"><span>github.com/you/<b>trip-planner</b></span><span class="pill ok">Public</span></div>
+            <div class="meta">★ 24 · README · Live demo ↗</div>
+            <div class="graph" id="commitGraph" aria-label="Commit activity"></div>
+          </div>
+        </div>
+        <div class="pc rise" style="--d:3">
+          <div class="hd"><span class="ib"><svg class="ic"><use href="#i-spark"/></svg></span><b>Know your why</b></div>
+          <span class="sub">Love for the job goes a long way.</span>
+          <div class="viz">
+            <span class="why-q">Why engineering?</span>
+            <span class="why">I love <b>building things</b></span>
+            <span class="why">I love <b>working with customers</b></span>
+            <span class="why">I love <b>hard puzzles</b></span>
+          </div>
+        </div>
+        <div class="pc rise" style="--d:4">
+          <div class="hd"><span class="ib"><svg class="ic"><use href="#i-pulse"/></svg></span><b>Think out loud</b></div>
+          <span class="sub">We want to see how you think.</span>
+          <div class="viz">
+            <span class="bub you">"Not sure about this part, but I'd start by…"</span>
+            <span class="bub them">"Good direction. What happens at scale?"</span>
+            <span class="bub no"><s>"Give me a minute alone to solve it."</s></span>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">Before questions, three tips for engineering interviews today. First, build a real application you're passionate about. Make it work, put the code in a public GitHub repo, and talk about it. A candidate who built something real is always impressive. Second, know why you want to be an engineer. Maybe you love building things, maybe you love working with customers, maybe you love complex puzzles. Love for the job goes a long way. Third, in technical questions we want to see how you think. Even if you don't know the answer, think out loud: share the direction and approach you believe is right, even if a piece is missing. There's a good chance the interviewer will play along and help you. What doesn't work is going silent with "leave me alone and let me solve it."</aside>
     </section>
 
     <!-- 18 THANKS -->
@@ -789,7 +970,7 @@ $ <span class="blink">█</span></pre>
       <div class="dots" id="dots"></div>
       <button class="nav-btn" id="nextBtn" type="button" aria-label="Next slide">›</button>
     </div>
-    <div class="ctl-r"><button class="txt-btn" id="fsBtn" type="button">Fullscreen <kbd>F</kbd></button></div>
+    <div class="ctl-r"><button class="txt-btn" id="sndBtn" type="button" aria-pressed="true">Sound <kbd>S</kbd></button><button class="txt-btn" id="fsBtn" type="button">Fullscreen <kbd>F</kbd></button></div>
   </div>
 </div>
 
@@ -855,6 +1036,266 @@ $ <span class="blink">█</span></pre>
     el('text', { x: 735, y: y + 6, 'text-anchor': 'middle', 'font-family': 'IBM Plex Sans, sans-serif', 'font-size': 20, fill: col }, mx, up ? '↑' : '↓');
   });
 
+  // AppsFlyer platform hub
+  var pf = document.getElementById('platform');
+  var chans = ['Mobile','Web','CTV','SMS','E-mail','Social','Display ads','Search'];
+  var caps = ['Attribution','Cross-device','Deep linking','Audiences','Predictive analytics','ROI / LTV reporting','Cost & ad revenue','Cohorts & lift tests','Raw data & analytics'];
+  el('text',{x:110,y:20,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':11,'letter-spacing':2,fill:'var(--fg-dim)'},pf,'CHANNELS');
+  el('text',{x:850,y:14,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':11,'letter-spacing':2,fill:'var(--fg-dim)'},pf,'MEASURE & GROW');
+  chans.forEach(function(c,i){
+    var y = 52 + i*50;
+    el('path',{d:'M190,'+y+' C290,'+y+' 300,225 394,225',fill:'none',stroke:'var(--accent)','stroke-opacity':.45,'stroke-width':1.3,'class':'flow-line'},pf);
+    var g = el('g',{'class':'pop',style:'--d:'+i},pf);
+    el('rect',{x:30,y:y-17,width:160,height:34,rx:17,fill:'var(--panel)',stroke:'var(--line)'},g);
+    el('text',{x:110,y:y+4.5,'text-anchor':'middle','font-family':'IBM Plex Sans, sans-serif','font-size':13.5,fill:'var(--fg)'},g,c);
+  });
+  caps.forEach(function(c,i){
+    var y = 42 + i*46;
+    el('path',{d:'M566,225 C660,225 670,'+y+' 770,'+y,fill:'none',stroke:'var(--warm)','stroke-opacity':.45,'stroke-width':1.3,'class':'flow-line'},pf);
+    var g = el('g',{'class':'pop',style:'--d:'+(i+2)},pf);
+    el('rect',{x:770,y:y-16,width:162,height:32,rx:8,fill:'var(--panel)',stroke:'rgba(242,153,74,.35)'},g);
+    el('text',{x:851,y:y+4.5,'text-anchor':'middle','font-family':'IBM Plex Sans, sans-serif','font-size':12.5,fill:'var(--fg)'},g,c);
+  });
+  el('line',{x1:480,y1:311,x2:480,y2:410,stroke:'var(--olive)','stroke-width':1.3,'class':'flow-line'},pf);
+  el('circle',{cx:480,cy:225,r:120,fill:'none',stroke:'var(--accent)','stroke-opacity':.3,'stroke-dasharray':'2 6','class':'pulse'},pf);
+  el('circle',{cx:480,cy:225,r:86,fill:'var(--bg-2)',stroke:'var(--accent)','stroke-width':2},pf);
+  el('text',{x:480,y:200,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':10,'letter-spacing':1.5,fill:'var(--fg-dim)'},pf,'UNIVERSAL SDK · S2S');
+  el('text',{x:480,y:234,'text-anchor':'middle','font-family':'Fraunces, serif','font-weight':700,'font-size':27,fill:'var(--fg)'},pf,'AppsFlyer');
+  el('text',{x:480,y:256,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':10.5,'letter-spacing':1.5,fill:'var(--accent)'},pf,'CLOUD PLATFORM');
+  el('rect',{x:345,y:412,width:270,height:40,rx:20,fill:'rgba(188,200,130,.1)',stroke:'var(--olive)'},pf);
+  el('text',{x:480,y:437,'text-anchor':'middle','font-family':'IBM Plex Sans, sans-serif','font-size':14,'font-weight':600,fill:'var(--olive)'},pf,'Connect · 10K+ integrated partners');
+
+  // before / after ecosystem
+  var brands = ['Gaming','Retail','Fintech','Travel','Food delivery','Streaming'];
+  var eco = ['Ad networks','Social','Search','CTV','Retail media','Email & SMS','Agencies','Analytics'];
+  function bxy(i){ return [160, 70 + i*58]; }
+  function exy(i){ return [640, 60 + i*44]; }
+  function nodes(svg, ecoLabel){
+    el('text',{x:160,y:26,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':11,'letter-spacing':2,fill:'var(--fg-dim)'},svg,'BRANDS');
+    el('text',{x:640,y:26,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':11,'letter-spacing':2,fill:'var(--fg-dim)'},svg,ecoLabel);
+    brands.forEach(function(b,i){ var p=bxy(i);
+      el('circle',{cx:p[0],cy:p[1],r:15,fill:'var(--panel)',stroke:'var(--olive)','stroke-width':1.6},svg);
+      el('text',{x:p[0]-26,y:p[1]+4.5,'text-anchor':'end','font-family':'IBM Plex Sans, sans-serif','font-size':14,fill:'var(--fg)'},svg,b);
+    });
+    eco.forEach(function(b,i){ var p=exy(i);
+      el('circle',{cx:p[0],cy:p[1],r:13,fill:'var(--panel)',stroke:'var(--violet)','stroke-width':1.6},svg);
+      el('text',{x:p[0]+24,y:p[1]+4.5,'font-family':'IBM Plex Sans, sans-serif','font-size':14,fill:'var(--fg)'},svg,b);
+    });
+  }
+  var bf = document.getElementById('eco-before');
+  brands.forEach(function(_,i){ eco.forEach(function(_,j){
+    var a=bxy(i), b=exy(j), mx=(a[0]+b[0])/2;
+    el('path',{d:'M'+(a[0]+15)+','+a[1]+' C'+mx+','+(a[1]+(j-i)*9)+' '+mx+','+(b[1]-(j-i)*9)+' '+(b[0]-13)+','+b[1],fill:'none',stroke:'var(--red)','stroke-opacity':.32,'stroke-width':1.1,'class':'draw',style:'--d:'+((i+j)%6)},bf);
+  }); });
+  nodes(bf,'ECOSYSTEM');
+  var af = document.getElementById('eco-after');
+  brands.forEach(function(_,i){ var a=bxy(i);
+    el('path',{d:'M'+(a[0]+15)+','+a[1]+' C300,'+a[1]+' 300,215 344,215',fill:'none',stroke:'var(--accent)','stroke-opacity':.6,'stroke-width':1.4,'class':'flow-line'},af); });
+  eco.forEach(function(_,j){ var b=exy(j);
+    el('path',{d:'M456,215 C500,215 500,'+b[1]+' '+(b[0]-13)+','+b[1],fill:'none',stroke:'var(--accent)','stroke-opacity':.6,'stroke-width':1.4,'class':'flow-line'},af); });
+  var hub = el('g',{'class':'pop',style:'--d:2'},af);
+  el('circle',{cx:400,cy:215,r:76,fill:'none',stroke:'var(--accent)','stroke-opacity':.3,'stroke-dasharray':'2 6'},hub);
+  el('circle',{cx:400,cy:215,r:56,fill:'var(--bg-2)',stroke:'var(--accent)','stroke-width':2},hub);
+  el('text',{x:400,y:221,'text-anchor':'middle','font-family':'Fraunces, serif','font-weight':700,'font-size':19,fill:'var(--fg)'},hub,'AppsFlyer');
+  nodes(af,'ECOSYSTEM / MARKETPLACE');
+
+  // count-up for stats
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function countUp(slide){
+    if (reduce) return;
+    slide.querySelectorAll('.num[data-to]').forEach(function(n){
+      var to = +n.getAttribute('data-to'), suf = n.getAttribute('data-suf'), t0 = null;
+      function fmt(v){ return Math.round(v).toLocaleString('en-US') + (suf ? '<span>' + suf + '</span>' : ''); }
+      function step(ts){ if(!t0) t0 = ts; var k = Math.min(1,(ts - t0)/1300); n.innerHTML = fmt(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(step); }
+      requestAnimationFrame(step);
+    });
+  }
+  // wave sound (synthesized, no files)
+  var snd = (function(){
+    var ac = null, master = null, noiseBuf = null, live = [], bubbleTimer = 0, on = true;
+    try { on = localStorage.getItem('deck-sound') !== '0'; } catch (e) {}
+    function ensure(){
+      if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      ac = new AC();
+      var comp = ac.createDynamicsCompressor(); comp.connect(ac.destination);
+      master = ac.createGain(); master.gain.value = .9; master.connect(comp);
+      noiseBuf = ac.createBuffer(1, ac.sampleRate * 3, ac.sampleRate);
+      var d = noiseBuf.getChannelData(0), last = 0;
+      for (var i = 0; i < d.length; i++){ var w = Math.random() * 2 - 1; last = (last + .04 * w) / 1.04; d[i] = w * .6 + last * 2.2; }
+    }
+    function ready(){ return on && ac && ac.state === 'running'; }
+    function noise(){ var n = ac.createBufferSource(); n.buffer = noiseBuf; n.loop = true; return n; }
+    function track(node){ live.push(node); return node; }
+    function rumble(delay, dur){
+      if (!ready()) return;
+      var t = ac.currentTime + delay, n = track(noise()), f = ac.createBiquadFilter(), g = ac.createGain();
+      f.type = 'lowpass'; f.frequency.setValueAtTime(180, t); f.frequency.exponentialRampToValueAtTime(1400, t + dur);
+      g.gain.setValueAtTime(0.0001, ac.currentTime); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(.7, t + dur);
+      g.gain.exponentialRampToValueAtTime(.0001, t + dur + .5);
+      n.connect(f); f.connect(g); g.connect(master); n.start(); n.stop(t + dur + .6);
+      var o = track(ac.createOscillator()), og = ac.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(38, t); o.frequency.linearRampToValueAtTime(62, t + dur);
+      og.gain.setValueAtTime(0.0001, ac.currentTime); og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(.55, t + dur); og.gain.exponentialRampToValueAtTime(.0001, t + dur + .4);
+      o.connect(og); og.connect(master); o.start(); o.stop(t + dur + .5);
+    }
+    function hiss(level, dur){
+      if (!ready()) return;
+      var t = ac.currentTime, n = track(noise()), f = ac.createBiquadFilter(), g = ac.createGain();
+      f.type = 'highpass'; f.frequency.value = 2200;
+      g.gain.setValueAtTime(level, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+      n.connect(f); f.connect(g); g.connect(master); n.start(t); n.stop(t + dur + .1);
+    }
+    function crash(){
+      if (!ready()) return;
+      var t = ac.currentTime;
+      var n = track(noise()), f = ac.createBiquadFilter(), g = ac.createGain();
+      f.type = 'lowpass'; f.frequency.setValueAtTime(5000, t); f.frequency.exponentialRampToValueAtTime(400, t + 2.2);
+      g.gain.setValueAtTime(1.1, t); g.gain.exponentialRampToValueAtTime(.0001, t + 2.4);
+      n.connect(f); f.connect(g); g.connect(master); n.start(t); n.stop(t + 2.5);
+      var o = track(ac.createOscillator()), og = ac.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(95, t); o.frequency.exponentialRampToValueAtTime(30, t + .7);
+      og.gain.setValueAtTime(1.2, t); og.gain.exponentialRampToValueAtTime(.0001, t + .9);
+      o.connect(og); og.connect(master); o.start(t); o.stop(t + 1);
+      hiss(.55, 1.1);
+    }
+    function bubble(){
+      if (!ready()) return;
+      var t = ac.currentTime, o = track(ac.createOscillator()), g = ac.createGain(), f0 = 300 + Math.random() * 500;
+      o.type = 'sine'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f0 * 2.2, t + .07);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.12, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + .09);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + .1);
+    }
+    function underwater(){
+      if (!ready()) return;
+      var t = ac.currentTime, n = track(noise()), f = ac.createBiquadFilter(), g = ac.createGain();
+      var lfo = track(ac.createOscillator()), lg = ac.createGain();
+      f.type = 'lowpass'; f.frequency.value = 320; f.Q.value = 3;
+      lfo.frequency.value = .25; lg.gain.value = 140; lfo.connect(lg); lg.connect(f.frequency);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.35, t + 1.2);
+      n.connect(f); f.connect(g); g.connect(master); n.start(t); lfo.start(t);
+      live.push({ gain: g });
+      (function loop(){ bubble(); if (Math.random() < .35) setTimeout(bubble, 70); bubbleTimer = setTimeout(loop, 180 + Math.random() * 650); })();
+    }
+    function stop(){
+      clearTimeout(bubbleTimer); bubbleTimer = 0;
+      if (!ac) return;
+      var t = ac.currentTime;
+      live.forEach(function(x){
+        try {
+          if (x.gain) { x.gain.gain.cancelScheduledValues(t); x.gain.gain.setValueAtTime(x.gain.gain.value, t); x.gain.gain.linearRampToValueAtTime(0, t + .4); }
+          else x.stop(t + .45);
+        } catch (e) {}
+      });
+      live = [];
+    }
+    function setOn(v){ on = v; try { localStorage.setItem('deck-sound', v ? '1' : '0'); } catch (e) {} if (!v) stop(); }
+    return { ensure: ensure, rumble: rumble, crash: crash, hiss: hiss, underwater: underwater, stop: stop, setOn: setOn, isOn: function(){ return on; } };
+  })();
+  ['pointerdown', 'keydown', 'touchstart'].forEach(function(ev){ window.addEventListener(ev, function(){ snd.ensure(); }, { capture: true, passive: true }); });
+
+  // scale: crashing wave from the top
+  var sea = { raf: 0, size: null };
+  function stopSea(){ if (sea.raf) cancelAnimationFrame(sea.raf); sea.raf = 0; sea.size = null; snd.stop(); }
+  function startSea(slide){
+    stopSea();
+    var cv = slide.querySelector('canvas.sea'), ctx = cv.getContext('2d');
+    var word = slide.querySelector('.word'), cap = slide.querySelector('.after-cap');
+    word.classList.remove('drowned'); cap.classList.remove('show'); slide.classList.remove('shake');
+    var W = 0, H = 0;
+    function size(){
+      var r = slide.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    size(); sea.size = size;
+    var parts = [], bubbles = [], t0 = performance.now(), hitWord = false, hitBottom = false;
+    var DELAY = reduce ? 0 : 750, FALL = reduce ? 1 : 1250;
+    snd.rumble(DELAY / 1000, FALL / 1000 * .62);
+    function edge(x, t, base){ return base + 30 * Math.sin(x * .011 + t * 3.1) + 16 * Math.sin(x * .029 - t * 4.7) + 7 * Math.sin(x * .07 + t * 8); }
+    function spray(x, y, n, spd, up){
+      for (var i = 0; i < n; i++){
+        var ang = up ? (-Math.PI / 2 + (Math.random() - .5) * 2.4) : (Math.PI / 2 + (Math.random() - .5) * 1.8);
+        var v = spd * (.35 + Math.random());
+        parts.push({ x: x + (Math.random() - .5) * 30, y: y, vx: Math.cos(ang) * v, vy: Math.sin(ang) * v, r: 1 + Math.random() * 3.6, life: 1 });
+      }
+    }
+    function trace(t, base){ ctx.moveTo(0, edge(0, t, base)); for (var x = 12; x <= W + 12; x += 12) ctx.lineTo(x, edge(x, t, base)); }
+    function frame(now){
+      var ms = now - t0, t = ms / 1000;
+      ctx.clearRect(0, 0, W, H);
+      var p = Math.max(0, Math.min(1, (ms - DELAY) / FALL)), eased = p * p;
+      var base = -.3 * H + eased * H * 1.5, filled = p >= 1;
+      if (ms > DELAY){
+        var settle = filled ? Math.min(1, (ms - DELAY - FALL) / 1200) : 0;
+        var bottom = Math.max(1, Math.min(base + 40, H));
+        var g = ctx.createLinearGradient(0, 0, 0, bottom);
+        g.addColorStop(0, 'rgba(5,24,42,.95)');
+        g.addColorStop(.65, 'rgba(14,78,104,.88)');
+        g.addColorStop(1, 'rgba(70,175,195,.9)');
+        ctx.globalAlpha = 1 - .38 * settle;
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.moveTo(W + 12, -10); ctx.lineTo(0, -10); ctx.lineTo(0, edge(0, t, base)); trace(t, base); ctx.closePath(); ctx.fill();
+        ctx.globalAlpha = 1;
+        if (!filled){
+          ctx.strokeStyle = 'rgba(190,240,250,.14)'; ctx.lineWidth = 2;
+          for (var i = 0; i < 46; i++){
+            var sx = (i * 97.3) % W, len = 70 + (i * 37) % 140, sy = (t * 1100 + i * 53) % Math.max(base, 1);
+            ctx.beginPath(); ctx.moveTo(sx, sy - len); ctx.lineTo(sx, sy); ctx.stroke();
+          }
+          ctx.beginPath(); trace(t, base);
+          ctx.strokeStyle = 'rgba(200,242,250,.28)'; ctx.lineWidth = 26; ctx.stroke();
+          ctx.strokeStyle = 'rgba(240,252,255,.95)'; ctx.lineWidth = 7; ctx.stroke();
+          if (!reduce) for (var k = 0; k < 7; k++){ var x = Math.random() * W; spray(x, edge(x, t, base), 1, 560, false); }
+        }
+        var wr = word.getBoundingClientRect(), sr = slide.getBoundingClientRect();
+        var wordY = wr.top - sr.top + wr.height * .5;
+        if (!hitWord && base > wordY){
+          hitWord = true; word.classList.add('drowned'); snd.crash();
+          if (!reduce){
+            slide.classList.add('shake'); setTimeout(function(){ slide.classList.remove('shake'); }, 650);
+            for (var x2 = wr.left - sr.left; x2 <= wr.right - sr.left; x2 += 14) spray(x2, wordY - wr.height * .3, 7, 1000, true);
+          }
+        }
+        if (!hitBottom && base > H){
+          hitBottom = true; snd.hiss(.4, .9); setTimeout(function(){ snd.underwater(); }, 350);
+          if (!reduce) for (var x3 = 0; x3 <= W; x3 += 20) spray(x3, H, 4, 760, true);
+          setTimeout(function(){ cap.classList.add('show'); }, reduce ? 0 : 500);
+        }
+        if (filled){
+          if (bubbles.length < 80 && Math.random() < .55) bubbles.push({ x: Math.random() * W, y: H + 10, r: 1.5 + Math.random() * 4.5, v: 30 + Math.random() * 70, ph: Math.random() * 6 });
+          ctx.strokeStyle = 'rgba(205,242,250,.45)'; ctx.lineWidth = 1.2;
+          bubbles.forEach(function(bb){ bb.y -= bb.v / 60; ctx.beginPath(); ctx.arc(bb.x + Math.sin(t * 2 + bb.ph) * 7, bb.y, bb.r, 0, 6.283); ctx.stroke(); });
+          bubbles = bubbles.filter(function(bb){ return bb.y > -10; });
+          ctx.globalCompositeOperation = 'lighter';
+          for (var c = 0; c < 6; c++){
+            ctx.beginPath();
+            for (var x4 = 0; x4 <= W + 20; x4 += 20){
+              var y4 = H * (.1 + c * .16) + 22 * Math.sin(x4 * .008 + t * .9 + c) + 10 * Math.sin(x4 * .021 - t * 1.4 + c * 2);
+              x4 ? ctx.lineTo(x4, y4) : ctx.moveTo(x4, y4);
+            }
+            ctx.strokeStyle = 'rgba(110,215,232,.06)'; ctx.lineWidth = 16; ctx.stroke();
+          }
+          ctx.globalCompositeOperation = 'source-over';
+        }
+      }
+      ctx.fillStyle = 'rgb(228,248,255)';
+      parts = parts.filter(function(q){ return q.life > 0 && q.y < H + 40 && q.y > -300; });
+      parts.forEach(function(q){
+        q.vy += 1500 / 60; q.x += q.vx / 60; q.y += q.vy / 60; q.life -= .013;
+        ctx.globalAlpha = Math.max(0, q.life); ctx.beginPath(); ctx.arc(q.x, q.y, q.r, 0, 6.283); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      if (reduce && filled && hitBottom) { sea.raf = 0; return; }
+      sea.raf = requestAnimationFrame(frame);
+    }
+    sea.raf = requestAnimationFrame(frame);
+  }
+  window.addEventListener('resize', function(){ if (sea.size) sea.size(); });
+
+  // commit graph
+  var cg = document.getElementById('commitGraph');
+  if (cg) for (var gi = 0; gi < 70; gi++){ var sp = document.createElement('span'); var v = (Math.sin(gi * 12.9898) * 43758.5453) % 1; v = Math.abs(v); sp.style.opacity = (gi > 40 ? .35 + v * .65 : .08 + v * .5).toFixed(2); cg.appendChild(sp); }
+
   // deck navigation
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
   var total = slides.length, idx = 0;
@@ -875,6 +1316,8 @@ $ <span class="blink">█</span></pre>
   function pad(n){ return n < 10 ? '0' + n : '' + n; }
   function render(){
     slides.forEach(function(s, i){ s.classList.toggle('active', i === idx); });
+    if (slides[idx].querySelector('.num[data-to]')) countUp(slides[idx]);
+    if (slides[idx].classList.contains('scale-slide')) startSea(slides[idx]); else stopSea();
     dots.forEach(function(d, i){ d.classList.toggle('active', i === idx); });
     counter.textContent = pad(idx + 1) + ' / ' + pad(total);
     fill.style.width = ((idx + 1) / total * 100) + '%';
@@ -907,6 +1350,10 @@ $ <span class="blink">█</span></pre>
   }
   if (!document.documentElement.requestFullscreen) fsBtn.hidden = true;
   fsBtn.addEventListener('click', toggleFs);
+  var sndBtn = document.getElementById('sndBtn');
+  function syncSnd(){ sndBtn.setAttribute('aria-pressed', snd.isOn() ? 'true' : 'false'); sndBtn.firstChild.nodeValue = snd.isOn() ? 'Sound on ' : 'Sound off '; }
+  function toggleSnd(){ snd.setOn(!snd.isOn()); syncSnd(); }
+  sndBtn.addEventListener('click', toggleSnd); syncSnd();
 
   prevBtn.addEventListener('click', prev);
   nextBtn.addEventListener('click', next);
@@ -919,6 +1366,7 @@ $ <span class="blink">█</span></pre>
     else if (k === 'End'){ go(total - 1); }
     else if (k === 'n' || k === 'N'){ setNotes(notesPanel.hidden); }
     else if (k === 'f' || k === 'F'){ toggleFs(); }
+    else if (k === 's' || k === 'S'){ toggleSnd(); }
   });
 
   var stage = document.getElementById('stage'), touchX = null, touchY = null;
